@@ -36,8 +36,8 @@ Money OfferingItem::getPrice() {
     double k = importance * maxElasticity;
 
     // sigmoid asymmetry parameters
-    constexpr double minY = 0.4;
-    constexpr double maxY = 4.0;
+    constexpr double minY = 0.4; // minimal price multiplier
+    constexpr double maxY = 4.0; // maximum price multiplier
     constexpr double diff = maxY - minY;
     static const double v = std::log2((maxY - minY) / (1 - minY));
     
