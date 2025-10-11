@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <cmath>
 #include <string>
+#include <vector>
 
 namespace Axionomy {
 
@@ -22,27 +23,43 @@ namespace Axionomy {
 
 
     //-------------------------------------------------------------------------
-    // Offering item
+    // Offering Item data structure
     //-------------------------------------------------------------------------
-    class OfferingItem {
+    struct Item {
+        uint32_t id;               // Offering Item ID
+        uint32_t bitFlags;         // Item flags (reserved)
+        Money    basePrice;        // Base price based on supply chain
+        Quantity demand;           // Aggregate demand quantity
+        Quantity supply;           // Aggregate supply quantity        
+        double   importance;       // Aggregate market importance
+    };
+
+
+    //-------------------------------------------------------------------------
+    // Market Pricer
+    //-------------------------------------------------------------------------
+    class MarketPricer {
     public:
 
-        OfferingItem(Money basePrice, Quantity demand, Quantity supply, double importance=0.5);
+        MarketPricer(uint32_t size);
 
-        void setBasePrice(Money basePrice);
-        void setDemand(Quantity amount);
-        void setSupply(Quantity amount);
-        void setImportance(double amount);
+        uint32_t addItem(Money basePrice, Quantity demand, Quantity supply, double importance);
 
-        Money getPrice();
+        void setBasePrice(uint32_t id, Money basePrice);
+        void setDemand(uint32_t id, Quantity amount);
+        void setSupply(uint32_t id, Quantity amount);
+        void setImportance(uint32_t id, double amount);
+
+        Money getBasePrice(uint32_t id);
+        Quantity getDemand(uint32_t id);
+        Quantity getSupply(uint32_t id);
+        double getImportance(uint32_t id);
+
+        Money getPrice(uint32_t id);
 
     private:
 
-        Quantity demand;
-        Quantity supply;
-
-        Money    basePrice;
-        double   importance;
+        std::vector<Item> offerings;
 
     };
 
