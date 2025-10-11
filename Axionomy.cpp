@@ -10,12 +10,14 @@ using namespace Axionomy;
 int main()
 {
 
-	Quantity demand = 100, supply = 99;
-	OfferingItem bread(1000, demand, supply, 0.2);
+	for (int i = 0; i < 10; i++) {
+		Quantity demand = 100 + i, supply = 100 - i;
+		OfferingItem bread(1000, demand, supply, 0.2);
 
-	cout << "Get demand: " << demand << endl;
-	cout << "Get supply: " << supply << endl;
-	cout << "Current price: " << bread.getPrice() << endl;
+		cout << "Demand: " << demand
+			<< " Supply: " << supply
+			<< " Price: " << bread.getPrice() << endl;
+	}
 
 	return 0;
 }
