@@ -4,7 +4,9 @@ Web server
 
 ## Architecture layers
 
-1. Offering Items (Goods & Services Classifier)
-2. Supply Matrix (Goods & Services Input-Output Matrix)
-3. Market Pricer (Price Evaluation based on Supply Matrix, Demand/Supply)
-4. Agent Simulation of demand/supply (House Holds, Firms)
+### 1. Market Pricer
+- Items Classifier (Goods & Services)
+- Input-Output Matrix (Goods & Services Bill Of Materials)
+- Price evaluation based on I/O Matrix, Demand/Supply function
+
+### 2. Agent Simulation of demand/supply (House Holds, Firms)

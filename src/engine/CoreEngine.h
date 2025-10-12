@@ -26,8 +26,7 @@ namespace Axionomy {
     // Offering Item data structure
     //-------------------------------------------------------------------------
     struct Item {
-        uint32_t id;               // Offering Item ID
-        uint32_t bitFlags;         // Item flags (reserved)
+        uint64_t id;               // Offering Item ID        
         Money    basePrice;        // Base price based on supply chain
         Quantity demand;           // Aggregate demand quantity
         Quantity supply;           // Aggregate supply quantity        
@@ -41,21 +40,21 @@ namespace Axionomy {
     class MarketPricer {
     public:
 
-        MarketPricer(uint32_t size);
+        MarketPricer(uint64_t size);
 
-        uint32_t addItem(Money basePrice, Quantity demand, Quantity supply, double importance);
+        uint64_t addItem(Money basePrice, Quantity demand, Quantity supply, double importance);
 
-        void setBasePrice(uint32_t id, Money basePrice);
-        void setDemand(uint32_t id, Quantity amount);
-        void setSupply(uint32_t id, Quantity amount);
-        void setImportance(uint32_t id, double amount);
+        void setBasePrice(uint64_t id, Money basePrice);
+        void setDemand(uint64_t id, Quantity amount);
+        void setSupply(uint64_t id, Quantity amount);
+        void setImportance(uint64_t id, double amount);
 
-        Money getBasePrice(uint32_t id);
-        Quantity getDemand(uint32_t id);
-        Quantity getSupply(uint32_t id);
-        double getImportance(uint32_t id);
+        Money getBasePrice(uint64_t id);
+        Quantity getDemand(uint64_t id);
+        Quantity getSupply(uint64_t id);
+        double getImportance(uint64_t id);
 
-        Money getPrice(uint32_t id);
+        Money getPrice(uint64_t id);
 
     private:
 

@@ -4,54 +4,54 @@
 using namespace Axionomy;
 
 
-MarketPricer::MarketPricer(uint32_t size) {
+MarketPricer::MarketPricer(uint64_t size) {
     offerings.reserve(size);
 }
 
 
-uint32_t MarketPricer::addItem(Money basePrice, Quantity demand, Quantity supply, double importance) {
-    uint32_t index = uint32_t(offerings.size());
-    offerings.push_back({index, 0, basePrice, demand, supply, importance});
+uint64_t MarketPricer::addItem(Money basePrice, Quantity demand, Quantity supply, double importance) {
+    uint64_t index = offerings.size();
+    offerings.push_back({index, basePrice, demand, supply, importance});
     return index;
 }
 
 
-void MarketPricer::setBasePrice(uint32_t id, Money basePrice) {
+void MarketPricer::setBasePrice(uint64_t id, Money basePrice) {
     offerings[id].basePrice = basePrice;
 }
 
-void MarketPricer::setDemand(uint32_t id, Quantity amount) {
+void MarketPricer::setDemand(uint64_t id, Quantity amount) {
     offerings[id].demand = amount;
 }
 
-void MarketPricer::setSupply(uint32_t id, Quantity amount) {
+void MarketPricer::setSupply(uint64_t id, Quantity amount) {
     offerings[id].supply = amount;
 }
 
 
 // importance (0,1]
-void MarketPricer::setImportance(uint32_t id, double importance) {
+void MarketPricer::setImportance(uint64_t id, double importance) {
     offerings[id].importance = std::clamp(importance, 1e-6, 1.0);
 }
 
 
-Money MarketPricer::getBasePrice(uint32_t id) {
+Money MarketPricer::getBasePrice(uint64_t id) {
     return offerings[id].basePrice;
 }
 
-Quantity MarketPricer::getDemand(uint32_t id) {
+Quantity MarketPricer::getDemand(uint64_t id) {
     return offerings[id].demand;
 }
 
-Quantity MarketPricer::getSupply(uint32_t id) {
+Quantity MarketPricer::getSupply(uint64_t id) {
     return offerings[id].supply;
 }
 
-double MarketPricer::getImportance(uint32_t id) {
+double MarketPricer::getImportance(uint64_t id) {
     return offerings[id].importance;
 }
 
-Money MarketPricer::getPrice(uint32_t id) {
+Money MarketPricer::getPrice(uint64_t id) {
     // fetch values and convert to double
     double demand = double(offerings[id].demand);
     double supply = double(offerings[id].supply);
