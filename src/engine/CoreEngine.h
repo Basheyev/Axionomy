@@ -21,8 +21,8 @@ namespace Axionomy {
     using Money = double;
     using Quantity = int64_t;
     
-    enum class OfferingType : uint8_t { Good, Service };
-    enum class OfferingUnit : uint8_t { Piece, Kg, Liter, Hour, Unknown};
+    enum class ProductType : uint8_t { Good, Service };
+    enum class ProductUnit : uint8_t { Piece, Kg, Liter, Hour, Unknown};
 
     //-------------------------------------------------------------------------
     // Product data structure
