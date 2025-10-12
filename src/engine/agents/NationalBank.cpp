@@ -1,6 +1,6 @@
 
 
-#include "CoreEngine.h"
+#include "../CoreEngine.h"
 
 using namespace Axionomy;
 

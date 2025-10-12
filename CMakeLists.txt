@@ -12,7 +12,17 @@ endif()
 project ("Axionomy")
 
 # Добавьте источник в исполняемый файл этого проекта.
-add_executable (Axionomy "src/Axionomy.cpp" "src/Axionomy.h" "src/engine/CoreEngine.h" "src/engine/CoreEngine.cpp" "src/engine/NationalBank.cpp" "src/engine/Household.cpp" "src/engine/MarketPricer.cpp")
+add_executable (
+    Axionomy 
+    "src/Axionomy.cpp" 
+    "src/Axionomy.h" 
+    "src/engine/CoreEngine.h" 
+    "src/engine/CoreEngine.cpp" 
+    "src/engine/agents/NationalBank.cpp" 
+    "src/engine/agents/Household.cpp" 
+    "src/engine/pricer/MarketPricer.cpp" 
+    "src/engine/pricer/SupplyMatrix.cpp"
+)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET Axionomy PROPERTY CXX_STANDARD 20)

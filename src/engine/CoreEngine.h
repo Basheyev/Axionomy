@@ -20,17 +20,38 @@ namespace Axionomy {
 
     using Money = double;
     using Quantity = int64_t;
-
+    
+    enum class OfferingType : uint8_t { Good, Service };
+    enum class OfferingUnit : uint8_t { Piece, Kg, Liter, Hour, Unknown};
 
     //-------------------------------------------------------------------------
-    // Offering Item data structure
+    // Product data structure
     //-------------------------------------------------------------------------
-    struct Item {
-        uint64_t id;               // Offering Item ID        
+    struct Product {
+        uint64_t id;               // Product ID
+
         Money    basePrice;        // Base price based on supply chain
         Quantity demand;           // Aggregate demand quantity
         Quantity supply;           // Aggregate supply quantity        
-        double   importance;       // Aggregate market importance
+        double   importance;       // Aggregate consumer importance
+    };
+
+
+    //-------------------------------------------------------------------------
+    // Supply Matrix (Input/Output Bill of Materials)
+    //-------------------------------------------------------------------------
+    class SupplyMatrix {
+    public:        
+        SupplyMatrix(size_t n);
+
+        
+        size_t getSize();
+
+
+    private:
+        size_t N;
+        std::vector<double> matrix;
+
     };
 
 
@@ -54,11 +75,11 @@ namespace Axionomy {
         Quantity getSupply(uint64_t id);
         double getImportance(uint64_t id);
 
-        Money getPrice(uint64_t id);
+        Money evaluatePrice(uint64_t id);
 
     private:
 
-        std::vector<Item> offerings;
+        std::vector<Product> offerings;
 
     };
 

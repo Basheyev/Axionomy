@@ -1,5 +1,5 @@
 
-#include "CoreEngine.h"
+#include "../CoreEngine.h"
 
 using namespace Axionomy;
 
@@ -51,7 +51,7 @@ double MarketPricer::getImportance(uint64_t id) {
     return offerings[id].importance;
 }
 
-Money MarketPricer::getPrice(uint64_t id) {
+Money MarketPricer::evaluatePrice(uint64_t id) {
     // fetch values and convert to double
     double demand = double(offerings[id].demand);
     double supply = double(offerings[id].supply);

@@ -1,6 +1,6 @@
 # Axionomy
 
-Web server
+Web Game
 
 ## Architecture layers
 
@@ -9,4 +9,4 @@ Web server
 - Input-Output Matrix (Goods & Services Bill Of Materials)
 - Price evaluation based on I/O Matrix, Demand/Supply function
 
-### 2. Agent Simulation of demand/supply (House Holds, Firms)
+### 2. Agent Simulation of demand/supply (Households, Firms)
