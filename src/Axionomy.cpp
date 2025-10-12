@@ -7,11 +7,11 @@
 using namespace std;
 using namespace Axionomy;
 
-int main()
-{
+
+void producTest() {
 	MarketPricer marketPricer(1);
 
-	uint64_t id = marketPricer.addItem(1000,100,100,0.5);
+	uint64_t id = marketPricer.addProduct({ 0, ProductType::Good, ProductUnit::Piece, 1000, 1000, 100, 100, 0.5 });
 
 
 	for (int64_t i = 0; i < 40; i++) {
@@ -22,6 +22,25 @@ int main()
 			<< " Supply: " << marketPricer.getSupply(id)
 			<< " Price: " << marketPricer.evaluatePrice(id) << endl;
 	}
+}
+
+json loadJson(const std::string& path) {
+	json j;
+	cout << filesystem::current_path() << std::endl;
+	std::ifstream f(path);
+	if (!f.is_open()) {
+		cout << "failed to open" << std::endl;
+	} else {		
+		f >> j;
+	}
+	cout << j;
+	return j;
+}
+
+int main()
+{	
+	
+	loadJson("data\\products.json");
 
 	return 0;
 }

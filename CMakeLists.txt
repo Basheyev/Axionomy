@@ -21,7 +21,7 @@ add_executable (
     "src/engine/agents/NationalBank.cpp" 
     "src/engine/agents/Household.cpp" 
     "src/engine/pricer/MarketPricer.cpp" 
-    "src/engine/pricer/SupplyMatrix.cpp"
+    
 )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

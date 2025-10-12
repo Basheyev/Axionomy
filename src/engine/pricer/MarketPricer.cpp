@@ -4,62 +4,69 @@
 using namespace Axionomy;
 
 
-MarketPricer::MarketPricer(uint64_t size) {
-    offerings.reserve(size);
+MarketPricer::MarketPricer(uint64_t productsCount) {
+    this->productsCount = productsCount;
+    names.reserve(productsCount);
+    products.reserve(productsCount);        
+    matrix.assign(productsCount * productsCount, 0.0);
 }
 
+size_t MarketPricer::getProductsCount() {
+    return productsCount;
+}
 
-uint64_t MarketPricer::addItem(Money basePrice, Quantity demand, Quantity supply, double importance) {
-    uint64_t index = offerings.size();
-    offerings.push_back({index, basePrice, demand, supply, importance});
+uint64_t MarketPricer::addProduct(Product product) {
+    uint64_t index = products.size();
+    product.productID = index;
+    products.push_back(product);
     return index;
 }
 
 
 void MarketPricer::setBasePrice(uint64_t id, Money basePrice) {
-    offerings[id].basePrice = basePrice;
+    products[id].basePrice = basePrice;
 }
 
 void MarketPricer::setDemand(uint64_t id, Quantity amount) {
-    offerings[id].demand = amount;
+    products[id].demand = amount;
 }
 
 void MarketPricer::setSupply(uint64_t id, Quantity amount) {
-    offerings[id].supply = amount;
+    products[id].supply = amount;
 }
 
 
 // importance (0,1]
 void MarketPricer::setImportance(uint64_t id, double importance) {
-    offerings[id].importance = std::clamp(importance, 1e-6, 1.0);
+    products[id].importance = std::clamp(importance, 1e-6, 1.0);
 }
 
 
 Money MarketPricer::getBasePrice(uint64_t id) {
-    return offerings[id].basePrice;
+    return products[id].basePrice;
 }
 
 Quantity MarketPricer::getDemand(uint64_t id) {
-    return offerings[id].demand;
+    return products[id].demand;
 }
 
 Quantity MarketPricer::getSupply(uint64_t id) {
-    return offerings[id].supply;
+    return products[id].supply;
 }
 
 double MarketPricer::getImportance(uint64_t id) {
-    return offerings[id].importance;
+    return products[id].importance;
 }
 
 Money MarketPricer::evaluatePrice(uint64_t id) {
     // fetch values and convert to double
-    double demand = double(offerings[id].demand);
-    double supply = double(offerings[id].supply);
-    double basePrice = offerings[id].basePrice;
+    double demand = double(products[id].demand);
+    double supply = double(products[id].supply);
+    double basePrice = products[id].basePrice;
 
     // disbalance sensitivity (maximum 1% deficit adds 10% to price)
     constexpr double maxElasticity = 12.305019857643899;
-    double k = offerings[id].importance * maxElasticity;
+    double k = products[id].importance * maxElasticity;
 
     // sigmoid asymmetry parameters
     constexpr double minY = 0.4; // minimal price multiplier
@@ -80,6 +87,9 @@ Money MarketPricer::evaluatePrice(uint64_t id) {
    
     // evaluate price
     Money targetPrice = basePrice * std::clamp(sigmoid, minY, maxY);
-        
+    
+    // TODO: add inertia
+    products[id].currentPrice = targetPrice;
+
     return targetPrice;
 }

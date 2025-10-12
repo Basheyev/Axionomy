@@ -9,49 +9,38 @@
 
 #pragma once
 
+#include <filesystem>
+#include <fstream>
 #include <algorithm>
 #include <cstdint>
 #include <cmath>
 #include <string>
 #include <vector>
+#include "../libs/json.hpp"
+
 
 namespace Axionomy {
 
+    using json = nlohmann::json;
 
     using Money = double;
     using Quantity = int64_t;
     
-    enum class ProductType : uint8_t { Good, Service };
-    enum class ProductUnit : uint8_t { Piece, Kg, Liter, Hour, Unknown};
+    enum class ProductType : uint32_t { Good, Service };
+    enum class ProductUnit : uint32_t { Piece, Kg, Liter, Hour };
 
     //-------------------------------------------------------------------------
     // Product data structure
     //-------------------------------------------------------------------------
     struct Product {
-        uint64_t id;               // Product ID
-
-        Money    basePrice;        // Base price based on supply chain
+        uint64_t productID;        // Product ID
+        ProductType type;          // Good or Service
+        ProductUnit unit;          // Measurement unit
+        Money    currentPrice;     // Current price
+        Money    basePrice;        // Base price based on supply matrix
         Quantity demand;           // Aggregate demand quantity
-        Quantity supply;           // Aggregate supply quantity        
+        Quantity supply;           // Aggregate supply quantity  
         double   importance;       // Aggregate consumer importance
-    };
-
-
-    //-------------------------------------------------------------------------
-    // Supply Matrix (Input/Output Bill of Materials)
-    //-------------------------------------------------------------------------
-    class SupplyMatrix {
-    public:        
-        SupplyMatrix(size_t n);
-
-        
-        size_t getSize();
-
-
-    private:
-        size_t N;
-        std::vector<double> matrix;
-
     };
 
 
@@ -61,9 +50,11 @@ namespace Axionomy {
     class MarketPricer {
     public:
 
-        MarketPricer(uint64_t size);
+        MarketPricer(uint64_t productsCount);
 
-        uint64_t addItem(Money basePrice, Quantity demand, Quantity supply, double importance);
+        size_t getProductsCount();
+
+        uint64_t addProduct(Product product);
 
         void setBasePrice(uint64_t id, Money basePrice);
         void setDemand(uint64_t id, Quantity amount);
@@ -79,7 +70,10 @@ namespace Axionomy {
 
     private:
 
-        std::vector<Product> offerings;
+        size_t productsCount;
+        std::vector<std::string> names;
+        std::vector<Product> products;
+        std::vector<double> matrix;
 
     };
 

@@ -1,0 +1,29 @@
+{
+
+  "productID": 10,
+
+  "name": "Bolt",
+  "type": "Good",
+  "unit": "Piece",
+  "currentPrice": 1000.0,
+  "basePrice": 1000.0,
+  "demand": 300,
+  "supply": 300,
+  "importance": 0.2,
+
+  "materials": [
+    {
+      "input": 2,
+      "quantity": 0.002
+    },
+    {
+      "input": 3,
+      "quantity": 0.003
+    },
+    {
+      "input": 4,
+      "quantity": 1.0
+    }
+  ]
+
+}
