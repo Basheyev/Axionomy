@@ -6,35 +6,85 @@ using namespace Axionomy;
 
 
 MarketPricer::MarketPricer(const std::string& path) {
-
     productsCount = loadProductList(path);
+}
 
+
+/**
+*  @brief Loads product list from JSON file
+*  @param path relative path
+*  @return total products count or zero if failed
+*/
+size_t MarketPricer::loadProductList(const std::string& path) {
+    std::ifstream productListFile(path);                            // Open the file
+    if (!productListFile.is_open()) return 0;                       // if file is can not be opened, return zero products
+    names.clear();                                                  // clear names vector
+    products.clear();                                               // clear products vector
+    size_t count = 0;                                               // set initial products count to zero    
+    try {        
+        json productList;                                           // 
+        productListFile >> productList;                             // read file to JSON        
+
+        // TODO: JSON schema validator
+
+        if (!productList.is_array()) return 0;                      // if it's not an array then file is definitely corrupted
+        count = productList.size();                                 // if it's an array, get its size        
+        for (size_t i = 0; i < count; i++) {                        // iterate over the array
+            json productJSON = productList.at(i);                   // get each product object
+            if (!loadProduct(productJSON)) {                        // load product description or return zero on failure
+                names.clear();                                      // clear names vector
+                products.clear();                                   // clear products vector
+                return 0;                
+            }
+        }
+    } catch (const json::parse_error& e) {
+        std::cerr << "Parse error at byte " << e.byte << ": " << e.what() << '\n';
+        count = 0;
+    } catch (const std::exception& e) {
+        std::cerr << "General error: " << e.what() << '\n';
+        count = 0;
+    }
+    return count;
 }
 
 
 
-size_t MarketPricer::loadProductList(const std::string& path) {
+bool MarketPricer::loadProduct(json& description) {
     
-    std::ifstream productListFile(path);
-    if (!productListFile.is_open()) return 0;
+    int64_t id = description.value("productID", -1);
+    std::string name = description.value("name", "");
+    std::string type = description.value("type", "");
+    std::string unit = description.value("unit", "");
+    double currentPrice = description.value("currentPrice", 0.0);
+    double basePrice = description.value("basePrice", 0.0);
+    Quantity demand = description.value("demand", 0ULL);
+    Quantity supply = description.value("supply", 0ULL);
+    double importance = description.value("importance", 0.0);
 
-    json productList;
 
-    // try/catch
-    productListFile >> productList;
+    /*
+    
+    "productID": 1,
 
-    // parse JSON array
+    "name": "Wood",
+    "type": "Good",
+    "unit": "Piece",
+    "currentPrice": 10.0,
+    "basePrice": 10.0,
+    "demand": 500,
+    "supply": 500,
+    "importance": 0.2,
 
-    size_t count = productList.size();
+    "materials": [
+      {
+        "input": 0,
+        "quantity": 2.0
+      }      
+    ]
 
-    for (size_t i = 0; i < count; i++) {
+    */
 
-        json productJSON = productList.at(i);
-
-        std::cout << "Prodict Number " << i << std::endl << productJSON << std::endl;
-    }
-
-    return count;
+    return true;
 }
 
 

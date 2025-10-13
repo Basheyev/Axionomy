@@ -79,6 +79,7 @@ namespace Axionomy {
         std::vector<double> matrix;
 
         size_t loadProductList(const std::string& path);
+        bool loadProduct(json& productDescription);
 
     };
 
