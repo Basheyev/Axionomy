@@ -1,29 +1,65 @@
-{
+[
+  {
 
-  "productID": 10,
+    "productID": 0,
 
-  "name": "Bolt",
-  "type": "Good",
-  "unit": "Piece",
-  "currentPrice": 1000.0,
-  "basePrice": 1000.0,
-  "demand": 300,
-  "supply": 300,
-  "importance": 0.2,
+    "name": "Labor",
+    "type": "Service",
+    "unit": "Hour",
+    "currentPrice": 3.0,
+    "basePrice": 3.0,
+    "demand": 2000,
+    "supply": 2000,
+    "importance": 0.3,
+    "materials": []
 
-  "materials": [
-    {
-      "input": 2,
-      "quantity": 0.002
-    },
-    {
-      "input": 3,
-      "quantity": 0.003
-    },
-    {
-      "input": 4,
-      "quantity": 1.0
-    }
-  ]
+  },
 
-}
+  {
+
+    "productID": 1,
+
+    "name": "Wood",
+    "type": "Good",
+    "unit": "Piece",
+    "currentPrice": 10.0,
+    "basePrice": 10.0,
+    "demand": 500,
+    "supply": 500,
+    "importance": 0.2,
+
+    "materials": [
+      {
+        "input": 0,
+        "quantity": 2.0
+      }      
+    ]
+
+  },
+
+  {
+
+    "productID": 2,
+
+    "name": "Chair",
+    "type": "Good",
+    "unit": "Piece",
+    "currentPrice": 100.0,
+    "basePrice": 100.0,
+    "demand": 125,
+    "supply": 125,
+    "importance": 0.2,
+
+    "materials": [
+      {
+        "input": 0,
+        "quantity": 8
+      },
+      {
+        "input": 1,
+        "quantity": 6
+      }
+    ]
+
+  }
+]

@@ -1,14 +1,49 @@
 
 #include "../CoreEngine.h"
+#include <iostream>
 
 using namespace Axionomy;
 
 
-MarketPricer::MarketPricer(uint64_t productsCount) {
-    this->productsCount = productsCount;
-    names.reserve(productsCount);
-    products.reserve(productsCount);        
-    matrix.assign(productsCount * productsCount, 0.0);
+MarketPricer::MarketPricer(const std::string& path) {
+
+    productsCount = loadProductList(path);
+
+}
+
+
+
+size_t MarketPricer::loadProductList(const std::string& path) {
+    
+    std::ifstream productListFile(path);
+    if (!productListFile.is_open()) return 0;
+
+    json productList;
+
+    // try/catch
+    productListFile >> productList;
+
+    // parse JSON array
+
+    size_t count = productList.size();
+
+    for (size_t i = 0; i < count; i++) {
+
+        json productJSON = productList.at(i);
+
+        std::cout << "Prodict Number " << i << std::endl << productJSON << std::endl;
+    }
+
+    return count;
+}
+
+
+size_t MarketPricer::getProductID(const std::string& productName) {
+    for (size_t i = 0; i < names.size(); i++) {
+        std::string& name = names[i];
+        if (name == productName) return i;
+    }
+    return 0;
 }
 
 size_t MarketPricer::getProductsCount() {

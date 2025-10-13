@@ -9,14 +9,14 @@ using namespace Axionomy;
 
 
 void producTest() {
-	MarketPricer marketPricer(1);
 
-	uint64_t id = marketPricer.addProduct({ 0, ProductType::Good, ProductUnit::Piece, 1000, 1000, 100, 100, 0.5 });
+	MarketPricer marketPricer("data\\products.json");
 
+	size_t id = marketPricer.getProductID("Bolt");
 
 	for (int64_t i = 0; i < 40; i++) {
-		marketPricer.setDemand(id, 80 + i);
-		marketPricer.setSupply(id, 100);
+		marketPricer.setDemand(1, 80 + i);
+		marketPricer.setSupply(1, 100);
 
 		cout << "Demand: " << marketPricer.getDemand(id)
 			<< " Supply: " << marketPricer.getSupply(id)
@@ -24,23 +24,10 @@ void producTest() {
 	}
 }
 
-json loadJson(const std::string& path) {
-	json j;
-	cout << filesystem::current_path() << std::endl;
-	std::ifstream f(path);
-	if (!f.is_open()) {
-		cout << "failed to open" << std::endl;
-	} else {		
-		f >> j;
-	}
-	cout << j;
-	return j;
-}
 
 int main()
 {	
+	MarketPricer marketPricer("data\\products.json");
 	
-	loadJson("data\\products.json");
-
 	return 0;
 }

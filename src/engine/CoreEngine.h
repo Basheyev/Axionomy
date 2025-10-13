@@ -50,9 +50,12 @@ namespace Axionomy {
     class MarketPricer {
     public:
 
-        MarketPricer(uint64_t productsCount);
+        MarketPricer(const std::string& path);
 
         size_t getProductsCount();
+
+
+        size_t getProductID(const std::string& name);
 
         uint64_t addProduct(Product product);
 
@@ -74,6 +77,8 @@ namespace Axionomy {
         std::vector<std::string> names;
         std::vector<Product> products;
         std::vector<double> matrix;
+
+        size_t loadProductList(const std::string& path);
 
     };
 
