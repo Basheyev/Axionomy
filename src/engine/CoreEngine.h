@@ -25,6 +25,7 @@ namespace Axionomy {
 
     using Money = double;
     using Quantity = int64_t;
+    using BillOfMaterials = std::vector<std::pair<uint64_t, double>>;
     
     enum class ProductType : uint32_t { Good, Service };
     enum class ProductUnit : uint32_t { Piece, Kg, Liter, Hour };
@@ -41,6 +42,8 @@ namespace Axionomy {
         Quantity demand;           // Aggregate demand quantity
         Quantity supply;           // Aggregate supply quantity  
         double   importance;       // Aggregate consumer importance
+        std::string name;          // Product name
+        BillOfMaterials materials; // Bill of materials
     };
 
 
@@ -72,12 +75,9 @@ namespace Axionomy {
         Money evaluatePrice(uint64_t id);
 
     private:
-
-        size_t productsCount;
-        std::vector<std::string> names;
+                
         std::vector<Product> products;
-        std::vector<double> matrix;
-
+        
         size_t loadProductList(const std::string& path);
         bool validateSchema(json& productList);
         bool loadProduct(json& productDescription);

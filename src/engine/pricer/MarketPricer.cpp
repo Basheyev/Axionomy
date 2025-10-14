@@ -2,12 +2,13 @@
 #include "../CoreEngine.h"
 
 #include <iostream>
+#include <utility>
 
 using namespace Axionomy;
 
 
 MarketPricer::MarketPricer(const std::string& path) {
-    productsCount = loadProductList(path);
+    size_t productsCount = loadProductList(path);
 }
 
 
@@ -22,13 +23,12 @@ size_t MarketPricer::loadProductList(const std::string& path) {
     size_t count = 0;                                               // set initial products count to zero    
     try {        
         json productList;             
-        productList.parse(productListFile);                         // read file to JSON        
+        productListFile >> productList;                             // read file to JSON        
         if (!validateSchema(productList)) return 0;                 // validate schema
         count = productList.size();                                 // if it's an array, get its size        
         for (size_t i = 0; i < count; i++) {                        // iterate over the array
             json productJSON = productList.at(i);                   // get each product object
-            if (!loadProduct(productJSON)) {                        // load product description or return zero on failure
-                names.clear();                                      // clear names vector
+            if (!loadProduct(productJSON)) {                        // load product description or return zero on failure                
                 products.clear();                                   // clear products vector
                 return 0;                
             }
@@ -97,59 +97,50 @@ bool MarketPricer::validateSchema(json& data) {
 
 
 bool MarketPricer::loadProduct(json& description) {
+
+    Product product;
     
-    uint64_t id = description.value("productID", 0);
-    std::string name = description.value("name", "");
-    ProductType type = description.value("type", "") == "Good" ? ProductType::Good : ProductType::Service;
+    product.productID = description.value("productID", 0);    
+    product.type = description.value("type", "") == "Good" ? ProductType::Good : ProductType::Service;
     std::string unitStr = description.value("unit", "");
-    ProductUnit unit = ProductUnit::Piece;
-    if (unitStr == "Piece")  unit = ProductUnit::Piece;
-    if (unitStr == "Kg")     unit = ProductUnit::Kg;
-    if (unitStr == "Liter")  unit = ProductUnit::Liter;
-    if (unitStr == "Hour")   unit = ProductUnit::Hour;
-    double currentPrice = description.value("currentPrice", 0.0);
-    double basePrice = description.value("basePrice", 0.0);
-    Quantity demand = description.value("demand", 0ULL);
-    Quantity supply = description.value("supply", 0ULL);
-    double importance = description.value("importance", 0.0);
+    product.unit = ProductUnit::Piece;
+    if (unitStr == "Piece")  product.unit = ProductUnit::Piece;
+    if (unitStr == "Kg")     product.unit = ProductUnit::Kg;
+    if (unitStr == "Liter")  product.unit = ProductUnit::Liter;
+    if (unitStr == "Hour")   product.unit = ProductUnit::Hour;
+    product.currentPrice = description.value("currentPrice", 0.0);
+    product.basePrice = description.value("basePrice", 0.0);
+    product.demand = description.value("demand", 0ULL);
+    product.supply = description.value("supply", 0ULL);
+    product.importance = description.value("importance", 0.0);
 
-
-    /*
+    product.name = description.value("name", "");
+    const auto& mats = description["materials"];
+    if (!mats.is_array()) return false;
     
-    "productID": 1,
+    for (const auto& m : mats) {
+        uint64_t input = m.at("input").get<uint64_t>();
+        double quantity = m.at("quantity").get<double>();
+        product.materials.push_back({ input, quantity });
+    }
 
-    "name": "Wood",
-    "type": "Good",
-    "unit": "Piece",
-    "currentPrice": 10.0,
-    "basePrice": 10.0,
-    "demand": 500,
-    "supply": 500,
-    "importance": 0.2,
-
-    "materials": [
-      {
-        "input": 0,
-        "quantity": 2.0
-      }      
-    ]
-
-    */
+    // TODO: add to the list
+    products.push_back(product);
 
     return true;
 }
 
 
 size_t MarketPricer::getProductID(const std::string& productName) {
-    for (size_t i = 0; i < names.size(); i++) {
-        std::string& name = names[i];
+    for (size_t i = 0; i < products.size(); i++) {
+        std::string& name = products[i].name;
         if (name == productName) return i;
     }
     return 0;
 }
 
 size_t MarketPricer::getProductsCount() {
-    return productsCount;
+    return products.size();
 }
 
 uint64_t MarketPricer::addProduct(Product product) {
