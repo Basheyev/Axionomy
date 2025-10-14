@@ -1,5 +1,6 @@
 
 #include "../CoreEngine.h"
+
 #include <iostream>
 
 using namespace Axionomy;
@@ -17,17 +18,12 @@ MarketPricer::MarketPricer(const std::string& path) {
 */
 size_t MarketPricer::loadProductList(const std::string& path) {
     std::ifstream productListFile(path);                            // Open the file
-    if (!productListFile.is_open()) return 0;                       // if file is can not be opened, return zero products
-    names.clear();                                                  // clear names vector
-    products.clear();                                               // clear products vector
+    if (!productListFile.is_open()) return 0;                       // if file is can not be opened, return zero products    
     size_t count = 0;                                               // set initial products count to zero    
     try {        
-        json productList;                                           // 
-        productListFile >> productList;                             // read file to JSON        
-
-        // TODO: JSON schema validator
-
-        if (!productList.is_array()) return 0;                      // if it's not an array then file is definitely corrupted
+        json productList;             
+        productList.parse(productListFile);                         // read file to JSON        
+        if (!validateSchema(productList)) return 0;                 // validate schema
         count = productList.size();                                 // if it's an array, get its size        
         for (size_t i = 0; i < count; i++) {                        // iterate over the array
             json productJSON = productList.at(i);                   // get each product object
@@ -49,12 +45,68 @@ size_t MarketPricer::loadProductList(const std::string& path) {
 
 
 
+
+bool MarketPricer::validateSchema(json& data) {
+
+    if (!data.is_array() || data.empty())  return false;
+
+    for (const auto& p : data) {
+        if (!p.is_object()) return false;
+
+        // required fields
+        static const char* required[] = {
+            "productID","name","type","unit",
+            "currentPrice","basePrice","demand","supply",
+            "importance","materials"
+        };
+        for (auto key : required)
+            if (!p.contains(key)) return false;
+
+        // basic types and values
+        if (!p["productID"].is_number_integer() || p["productID"].get<int64_t>() < 0) return false;
+        if (!p["name"].is_string() || p["name"].get<std::string>().empty()) return false;
+        if (!p["type"].is_string()) return false;
+        if (p["type"] != "Good" && p["type"] != "Service") return false;
+        if (!p["unit"].is_string()) return false;
+        if (p["unit"] != "Piece" && p["unit"] != "Kg" && p["unit"] != "Liter" && p["unit"] != "Hour") return false;
+
+        auto check_nonneg = [&](const char* field) {
+            return p[field].is_number() && p[field].get<double>() >= 0;
+            };
+        if (!check_nonneg("currentPrice") || !check_nonneg("basePrice")) return false;
+
+        if (!p["demand"].is_number_integer() || p["demand"].get<int64_t>() < 0) return false;
+        if (!p["supply"].is_number_integer() || p["supply"].get<int64_t>() < 0) return false;
+
+        if (!p["importance"].is_number()) return false;
+        double imp = p["importance"].get<double>();
+        if (imp < 0 || imp > 1) return false;
+
+        // materials
+        const auto& mats = p["materials"];
+        if (!mats.is_array()) return false;
+        for (const auto& m : mats) {
+            if (!m.is_object() || !m.contains("input") || !m.contains("quantity")) return false;
+            if (!m["input"].is_number_integer() || m["input"].get<int64_t>() < 0) return false;
+            if (!m["quantity"].is_number() || m["quantity"].get<double>() < 0) return false;
+        }
+    }
+    return true;
+}
+
+
+
 bool MarketPricer::loadProduct(json& description) {
     
-    int64_t id = description.value("productID", -1);
+    uint64_t id = description.value("productID", 0);
     std::string name = description.value("name", "");
-    std::string type = description.value("type", "");
-    std::string unit = description.value("unit", "");
+    ProductType type = description.value("type", "") == "Good" ? ProductType::Good : ProductType::Service;
+    std::string unitStr = description.value("unit", "");
+    ProductUnit unit = ProductUnit::Piece;
+    if (unitStr == "Piece")  unit = ProductUnit::Piece;
+    if (unitStr == "Kg")     unit = ProductUnit::Kg;
+    if (unitStr == "Liter")  unit = ProductUnit::Liter;
+    if (unitStr == "Hour")   unit = ProductUnit::Hour;
     double currentPrice = description.value("currentPrice", 0.0);
     double basePrice = description.value("basePrice", 0.0);
     Quantity demand = description.value("demand", 0ULL);
