@@ -80,7 +80,8 @@ namespace Axionomy {
         
         size_t loadProductList(const std::string& path);
         bool validateSchema(json& productList);
-        bool loadProduct(json& productDescription);
+        bool loadProduct(json& productData);
+        bool productListContains(uint64_t productID);
 
     };
 
