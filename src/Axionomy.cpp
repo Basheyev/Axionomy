@@ -22,8 +22,12 @@ void productLoaderTest() {
 
 		cout << "Demand: " << product.demand
 			<< " Supply: " << product.supply
-			<< " Price: " << marketPricer.evaluatePrice(id) << endl;
+			<< " Price: " << marketPricer.evaluatePrice(id) 
+			<< " Cost: " << marketPricer.evaluateProductCost(id)
+			<< endl;
 	}
+
+
 }
 
 
