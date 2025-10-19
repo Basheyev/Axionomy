@@ -1,17 +1,19 @@
 #pragma once
 
 
-#include <filesystem>
-#include <fstream>
-#include <algorithm>
 #include <cstdint>
 #include <cmath>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <utility>
+
 #include "libs/json.hpp"
 
 
 namespace Axionomy {
+
+    constexpr uint64_t NOT_FOUND = 0xFFFFFFFFFFFFFFFF;
 
     using json = nlohmann::json;
 
@@ -29,8 +31,8 @@ namespace Axionomy {
         uint64_t productID;        // Product ID
         ProductType type;          // Good or Service
         ProductUnit unit;          // Measurement unit
-        Money    currentPrice;     // Current price
-        Money    basePrice;        // Base price based on supply matrix
+        Money    price;            // Market price
+        Money    cost;             // Product cost based on bills of materials
         Quantity demand;           // Aggregate demand quantity
         Quantity supply;           // Aggregate supply quantity  
         double   importance;       // Aggregate consumer importance
@@ -68,7 +70,10 @@ namespace Axionomy {
         const std::vector<Product>& getProductsList() const;
         bool getProductData(uint64_t productID, Product& product);
         bool setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply);
+        
+        size_t findProductIndexByID(uint64_t id);
         Money evaluatePrice(uint64_t id);
+        bool evaluateProductCost(uint64_t id);
 
     private:
 

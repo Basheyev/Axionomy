@@ -1,8 +1,8 @@
 
 #include "engine/CoreEngine.h"
 
-#include <iostream>
-#include <utility>
+#include <algorithm>
+
 
 using namespace Axionomy;
 
@@ -22,28 +22,29 @@ const std::vector<Product>& ProductsPricer::getProductsList() const {
 }
 
 
+size_t ProductsPricer::findProductIndexByID(uint64_t id) {
+    for (size_t index = 0; index < products.size(); index++) {
+        if (products[index].productID == id) return index;
+    }
+    return NOT_FOUND;
+}
+
 
 bool ProductsPricer::getProductData(uint64_t productID, Product& product) {
-    for (const Product& productData : products) {
-        if (productData.productID == productID) {
-            product = productData;
-            return true;
-        }
-    }
-    return false;
+    size_t index = findProductIndexByID(productID);
+    if (index == NOT_FOUND) return false;
+    product = products[index];
+    return true;
 }
 
 
 bool ProductsPricer::setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply) {
-    for (Product& productData : products) {
-        if (productData.productID == productID) {
-            productData.demand = demand;
-            productData.supply = supply;
-            return true;
-        }
-    }
-
-    return false;
+    size_t index = findProductIndexByID(productID);
+    if (index == NOT_FOUND) return false;
+    Product& productData = products[index];
+    productData.demand = demand;
+    productData.supply = supply;
+    return true;
 }
 
 
@@ -52,7 +53,7 @@ Money ProductsPricer::evaluatePrice(uint64_t id) {
     // fetch values and convert to double
     double demand = double(products[id].demand);
     double supply = double(products[id].supply);
-    double basePrice = products[id].basePrice;
+    double basePrice = products[id].cost;
 
     // disbalance sensitivity (maximum 1% deficit adds 10% to price)
     constexpr double maxElasticity = 12.305019857643899;
@@ -79,7 +80,17 @@ Money ProductsPricer::evaluatePrice(uint64_t id) {
     Money targetPrice = basePrice * std::clamp(sigmoid, minY, maxY);
     
     // TODO: add inertia
-    products[id].currentPrice = targetPrice;
+    products[id].price = targetPrice;
 
     return targetPrice;
+}
+
+
+bool ProductsPricer::evaluateProductCost(uint64_t productID) {
+    size_t index = findProductIndexByID(productID);
+    if (index == NOT_FOUND) return false;
+    Product& productData = products[index];
+
+
+    return 0ULL;
 }

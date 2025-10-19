@@ -23,8 +23,8 @@
  * ============================================================================= */
 #include "engine/CoreEngine.h"
 
-#include <iostream>
-#include <utility>
+#include <filesystem>
+#include <fstream>
 
 using namespace Axionomy;
 
@@ -148,13 +148,15 @@ bool ProductsLoader::loadProduct(json& productData, std::vector<Product>& produc
     if (unitStr == "Kg")     product.unit = ProductUnit::Kg;
     if (unitStr == "Liter")  product.unit = ProductUnit::Liter;
     if (unitStr == "Hour")   product.unit = ProductUnit::Hour;
-    product.currentPrice = productData.value("currentPrice", 0.0);
-    product.basePrice = productData.value("basePrice", 0.0);
+    product.price = productData.value("price", 0.0);
+    product.cost = productData.value("cost", 0.0);
     product.demand = productData.value("demand", 0ULL);
     product.supply = productData.value("supply", 0ULL);
     product.importance = productData.value("importance", 0.0);
     product.name = productData.value("name", "");
     const auto& materialsList = productData["materials"];
+
+    product.materials.reserve(materialsList.size());
 
     for (const auto& material : materialsList) {
         uint64_t input = material.at("input").get<uint64_t>();
