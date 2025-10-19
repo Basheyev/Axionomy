@@ -17,61 +17,36 @@ ProductsPricer::ProductsPricer(const std::string& path) {
 }
 
 
+const std::vector<Product>& ProductsPricer::getProductsList() const {
+    return products;
+}
 
-size_t ProductsPricer::getProductID(const std::string& productName) {
-    for (size_t i = 0; i < products.size(); i++) {
-        std::string& name = products[i].name;
-        if (name == productName) return i;
+
+
+bool ProductsPricer::getProductData(uint64_t productID, Product& product) {
+    for (const Product& productData : products) {
+        if (productData.productID == productID) {
+            product = productData;
+            return true;
+        }
     }
-    return 0;
-}
-
-size_t ProductsPricer::getProductsCount() {
-    return products.size();
-}
-
-uint64_t ProductsPricer::addProduct(Product product) {
-    uint64_t index = products.size();
-    product.productID = index;
-    products.push_back(product);
-    return index;
+    return false;
 }
 
 
-void ProductsPricer::setBasePrice(uint64_t id, Money basePrice) {
-    products[id].basePrice = basePrice;
-}
+bool ProductsPricer::setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply) {
+    for (Product& productData : products) {
+        if (productData.productID == productID) {
+            productData.demand = demand;
+            productData.supply = supply;
+            return true;
+        }
+    }
 
-void ProductsPricer::setDemand(uint64_t id, Quantity amount) {
-    products[id].demand = amount;
-}
-
-void ProductsPricer::setSupply(uint64_t id, Quantity amount) {
-    products[id].supply = amount;
-}
-
-
-// importance (0,1]
-void ProductsPricer::setImportance(uint64_t id, double importance) {
-    products[id].importance = std::clamp(importance, 1e-6, 1.0);
+    return false;
 }
 
 
-Money ProductsPricer::getBasePrice(uint64_t id) {
-    return products[id].basePrice;
-}
-
-Quantity ProductsPricer::getDemand(uint64_t id) {
-    return products[id].demand;
-}
-
-Quantity ProductsPricer::getSupply(uint64_t id) {
-    return products[id].supply;
-}
-
-double ProductsPricer::getImportance(uint64_t id) {
-    return products[id].importance;
-}
 
 Money ProductsPricer::evaluatePrice(uint64_t id) {
     // fetch values and convert to double

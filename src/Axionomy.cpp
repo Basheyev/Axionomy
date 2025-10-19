@@ -8,18 +8,19 @@ using namespace std;
 using namespace Axionomy;
 
 
-void producTest() {
+void productLoaderTest() {
 
 	ProductsPricer marketPricer("data\\products.json");
 
-	size_t id = marketPricer.getProductID("Bolt");
+	size_t id = marketPricer.getProductsList()[0].productID;
 
 	for (int64_t i = 0; i < 40; i++) {
-		marketPricer.setDemand(1, 80 + i);
-		marketPricer.setSupply(1, 100);
+		Product product;		
+		marketPricer.setDemandAndSupply(1, 80 + i, 100);
+		marketPricer.getProductData(1, product);
 
-		cout << "Demand: " << marketPricer.getDemand(id)
-			<< " Supply: " << marketPricer.getSupply(id)
+		cout << "Demand: " << product.demand
+			<< " Supply: " << product.supply
 			<< " Price: " << marketPricer.evaluatePrice(id) << endl;
 	}
 }
@@ -27,7 +28,7 @@ void producTest() {
 
 int main()
 {	
-	ProductsPricer marketPricer("data\\products.json");
-	
+	//ProductsPricer marketPricer("data\\products.json");
+	productLoaderTest();
 	return 0;
 }

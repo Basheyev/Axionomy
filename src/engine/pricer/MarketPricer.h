@@ -54,7 +54,7 @@ namespace Axionomy {
 
         static bool validateSchema(json& productList);
         static bool loadProduct(json& productData, std::vector<Product>& productsList);
-        static bool productListContains(uint64_t productID, std::vector<Product>& productsList);
+        static bool productListContains(uint64_t productID, const std::vector<Product>& productsList);
     };
 
 
@@ -65,22 +65,9 @@ namespace Axionomy {
     public:
 
         ProductsPricer(const std::string& path);
-
-        size_t getProductsCount();
-        size_t getProductID(const std::string& name);
-
-        uint64_t addProduct(Product product);
-
-        void setBasePrice(uint64_t id, Money basePrice);
-        void setDemand(uint64_t id, Quantity amount);
-        void setSupply(uint64_t id, Quantity amount);
-        void setImportance(uint64_t id, double amount);
-
-        Money getBasePrice(uint64_t id);
-        Quantity getDemand(uint64_t id);
-        Quantity getSupply(uint64_t id);
-        double getImportance(uint64_t id);
-
+        const std::vector<Product>& getProductsList() const;
+        bool getProductData(uint64_t productID, Product& product);
+        bool setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply);
         Money evaluatePrice(uint64_t id);
 
     private:

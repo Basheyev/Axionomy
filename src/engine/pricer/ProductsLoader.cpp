@@ -1,4 +1,6 @@
 /**
+ * =============================================================================
+ * 
  * @class ProductsLoader
  * @brief Loads and validates a list of products from a JSON file.
  *
@@ -18,7 +20,7 @@
  *
  * (C) Axionomy, Bolat Basheyev 2025
  * 
- **/
+ * ============================================================================= */
 #include "engine/CoreEngine.h"
 
 #include <iostream>
@@ -30,6 +32,7 @@ using namespace Axionomy;
 /**
 *  @brief Loads product list from JSON file
 *  @param path relative path
+*  @param products output vector of products
 *  @return total products count or zero if failed
 */
 size_t ProductsLoader::loadProductList(const std::string& path, std::vector<Product>& products) {
@@ -126,6 +129,7 @@ bool ProductsLoader::validateSchema(json& data) {
 /**
 *  @brief Loads the product JSON to the products list
 *  @param productData JSON object containing product
+*  @param products output vector of products
 *  @return true if the schema is valid, false otherwise
 */
 bool ProductsLoader::loadProduct(json& productData, std::vector<Product>& products) {
@@ -167,8 +171,14 @@ bool ProductsLoader::loadProduct(json& productData, std::vector<Product>& produc
 }
 
 
-bool ProductsLoader::productListContains(uint64_t productID, std::vector<Product>& products) {
-    for (Product& product : products) {
+/**
+*  @brief Checks if product list already contains product ID
+*  @param productID ID of product
+*  @param products output vector of products
+*  @return true if the schema is valid, false otherwise
+*/
+bool ProductsLoader::productListContains(uint64_t productID, const std::vector<Product>& products) {
+    for (const Product& product : products) {
         if (product.productID == productID) return true;
     }
     return false;
