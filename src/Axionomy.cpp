@@ -21,19 +21,21 @@ void productLoaderTest() {
 	size_t id = products[2].productID;
 
 	for (int64_t i = 0; i < 40; i++) {
-		Product product;		
-	//	marketPricer.setDemandAndSupply(0, 5, 10);
-	//	marketPricer.evaluateProductPrice(0);
-		marketPricer.setDemandAndSupply(id, 80 + i, 100);
-		marketPricer.getProductData(id, product);
+		Product product;			
+		marketPricer.setDemandAndSupply(id, 110 - i, 100);		
+		
+		marketPricer.tick(0);
 
-		cout << "Demand: " << product.demand
+		marketPricer.getProductData(1, product);
+
+		cout << "Product:" << product.name
+			<< " Demand: " << product.demand
 			<< " Supply: " << product.supply
-			<< " Price: " << marketPricer.evaluateProductPrice(id) 
-			<< " Cost: " << marketPricer.evaluateProductCost(id)
+			<< " Price: " << product.price
+			<< " Cost: " << product.cost
+			<< " Margin: " << (product.price - product.cost)
 			<< endl;
 	}
-
 
 }
 

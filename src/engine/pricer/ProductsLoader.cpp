@@ -35,7 +35,7 @@ using namespace Axionomy;
 *  @param products output vector of products
 *  @return total products count or zero if failed
 */
-size_t ProductsLoader::loadProductList(const std::string& path, std::vector<Product>& products) {
+size_t ProductsLoader::loadProductList(const std::string& path, ProductsList& products) {
     std::ifstream productListFile(path);                            // Open the file
     if (!productListFile.is_open()) return 0;                       // if file is can not be opened, return zero products    
     size_t count = 0;                                               // set initial products count to zero    
@@ -140,7 +140,7 @@ bool ProductsLoader::validateSchema(json& data) {
 *  @param products output vector of products
 *  @return true if the schema is valid, false otherwise
 */
-bool ProductsLoader::loadProduct(json& productData, std::vector<Product>& products) {
+bool ProductsLoader::loadProduct(json& productData, ProductsList& products) {
 
     // Check for duplicates
     uint64_t id = productData.value("productID", 0);;
@@ -188,7 +188,7 @@ bool ProductsLoader::loadProduct(json& productData, std::vector<Product>& produc
 *  @param products output vector of products
 *  @return true if the schema is valid, false otherwise
 */
-bool ProductsLoader::productListContains(uint64_t productID, const std::vector<Product>& products) {
+bool ProductsLoader::productListContains(uint64_t productID, const ProductsList& products) {
     for (const Product& product : products) {
         if (product.productID == productID) return true;
     }

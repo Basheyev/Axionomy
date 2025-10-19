@@ -26,9 +26,8 @@ namespace Axionomy {
         
     //-------------------------------------------------------------------------
     // Product data structure
-    //-------------------------------------------------------------------------
-    // TODO: add industry floor margin
-    struct Product {
+    //-------------------------------------------------------------------------    
+    struct Product {    
         uint64_t productID;        // Product ID
         ProductType type;          // Good or Service
         ProductUnit unit;          // Measurement unit
@@ -42,13 +41,16 @@ namespace Axionomy {
         BillOfMaterials materials; // Bill of materials
     };
 
+    using ProductsList = std::vector<Product>;
+    using ProductsIndex = std::unordered_map<uint64_t, size_t>;
+
 
     //-------------------------------------------------------------------------
     // Products list loader
     //-------------------------------------------------------------------------
     class ProductsLoader {
     public:
-        static size_t loadProductList(const std::string& path, std::vector<Product>& productsList);
+        static size_t loadProductList(const std::string& path, ProductsList& productsList);
     private:
         
         ProductsLoader() = delete;              
@@ -57,8 +59,8 @@ namespace Axionomy {
         ProductsLoader& operator=(const ProductsLoader&) = delete;
 
         static bool validateSchema(json& productList);
-        static bool loadProduct(json& productData, std::vector<Product>& productsList);
-        static bool productListContains(uint64_t productID, const std::vector<Product>& productsList);
+        static bool loadProduct(json& productData, ProductsList& productsList);
+        static bool productListContains(uint64_t productID, const ProductsList& productsList);
     };
 
 
@@ -69,19 +71,20 @@ namespace Axionomy {
     public:
 
         ProductsPricer(const std::string& path);
-        const std::vector<Product>& getProductsList() const;
+        const ProductsList& getProductsList() const;
+        size_t findProductIndexByID(uint64_t productID);
         Money getProductPrice(uint64_t productID);
         bool getProductData(uint64_t productID, Product& product);
         bool setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply);        
-        size_t findProductIndexByID(uint64_t productID);
-        Money evaluateProductPrice(uint64_t productID);
-        Money evaluateProductCost(uint64_t productID);
-
+        
+        
+        void tick(double deltaTime);
+        
     private:
-
-        std::vector<Product> products;
-        std::unordered_map<uint64_t, size_t> indexByID;
-
+        ProductsList products;
+        ProductsIndex indexByID;
+        void evaluateProductPrice(Product& product);
+        void evaluateProductCost(Product& product);
     };
 
 }

@@ -1,6 +1,5 @@
-/**
- * =============================================================================
- *
+/**============================================================================
+ * 
  * @class ProductsPricer
  * @brief Evaluates product costs and market prices based on demand, supply,
  *        and bill of materials (BoM).
@@ -17,22 +16,18 @@
  *  - Evaluate product prices based on demand–supply imbalance.
  *  - Update market data such as demand and supply for each product.
  *
- * Pricing model:
- *  price = cost * (1 + floorMargin) * sigmoid(balanceRatio * elasticity)
- *  where elasticity depends on product importance and imbalance magnitude.
- *
  * Notes:
  *  - Lookup operations are O(1) using an internal hash map.
- *  - Cost and price evaluations are O(#BoM components).
+ *  - Cost and price evaluations are O(N).
  *  - Not thread-safe for concurrent modifications.
  *  - Designed for use in economic and agent-based simulations.
  *
  * (C) Axionomy, Bolat Basheyev 2025
  *
- * =============================================================================
- */
-#include "engine/pricer/ProductsPricer.h"
+ *=============================================================================*/
 
+
+#include "engine/pricer/ProductsPricer.h"
 #include <algorithm>
 
 
@@ -59,7 +54,7 @@ ProductsPricer::ProductsPricer(const std::string& path) {
 }
 
 
-const std::vector<Product>& ProductsPricer::getProductsList() const {
+const ProductsList& ProductsPricer::getProductsList() const {
     return products;
 }
 
@@ -97,19 +92,20 @@ bool ProductsPricer::setDemandAndSupply(uint64_t productID, Quantity demand, Qua
 
 
 
-Money ProductsPricer::evaluateProductPrice(uint64_t productID) {
+void ProductsPricer::tick(double deltaTime) {
 
-    size_t index = findProductIndexByID(productID);
-    if (index == NOT_FOUND) return 0ULL;
+    for (Product& product : products) {
+        evaluateProductPrice(product);
+    }
+}
+
+
+
+void ProductsPricer::evaluateProductPrice(Product& product) {
 
     // fetch values and convert to double
-    Product& product = products[index];
     double demand = double(product.demand);
     double supply = double(product.supply);
-
-    // Update product cost using bill of materials
-    evaluateProductCost(productID);
-
     
     // disbalance sensitivity (maximum 1% deficit adds 10% to price)
     constexpr double maxElasticity = 12.305019857643899;
@@ -131,37 +127,38 @@ Money ProductsPricer::evaluateProductPrice(uint64_t productID) {
     // evaluate asymmetric sigmoid [min, max)    
     double e = std::exp(-balanceRatio * k);    
     double sigmoid = minY + (diff / std::pow(1 + e, v));
-   
+
+    // Update product cost using bill of materials
+    evaluateProductCost(product);
+
     // Add minimal industry margin to the cost
     double basePrice = product.cost * (1.0 + product.floorMargin);
 
-    // evaluate price
+    // evaluate target price
     Money targetPrice = basePrice * std::clamp(sigmoid, minY, maxY);
     
-    // TODO: add price change inertia
-    product.price = targetPrice;
-
-    return targetPrice;
+    // TODO: exponential interpolation of price (make speed adjustable)
+    constexpr double ticksToAdjust = 7.0; // Days to adjust
+    constexpr double alpha = 1.0 / ticksToAdjust;
+    product.price += alpha * (targetPrice - product.price);
 }
 
 
-Money ProductsPricer::evaluateProductCost(uint64_t productID) {
-    size_t index = findProductIndexByID(productID);
-    if (index == NOT_FOUND) return 0ULL;
-    Product& productData = products[index];
+void ProductsPricer::evaluateProductCost(Product& product) {
 
-    BillOfMaterials& bom = productData.materials;
+    BillOfMaterials& bom = product.materials;
 
     Money cost = 0;
 
-    for (std::pair<uint64_t, double>& component : bom) {
-        uint64_t componentID = component.first;
-        Money price = getProductPrice(componentID);
-        double amount = component.second;
-        cost += price * amount;
-    }
+    if (bom.size() > 0) {
+        for (std::pair<uint64_t, double>& component : bom) {
+            uint64_t componentID = component.first;
+            // straightforward non recursive approach
+            Money price = getProductPrice(componentID);
+            double amount = component.second;
+            cost += price * amount;
+        }
+        product.cost = cost;
+    }     
 
-    productData.cost = cost;
-
-    return cost;
 }
