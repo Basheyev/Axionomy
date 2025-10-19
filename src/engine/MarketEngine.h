@@ -75,16 +75,16 @@ namespace Axionomy {
     //-------------------------------------------------------------------------
     // Base interface of simulation entity
     //-------------------------------------------------------------------------
-    class Agent {
+    class EconomicAgent {
     public:
-        virtual ~Agent() = default;
+        virtual ~EconomicAgent() = default;
         virtual void update(double deltaTime) = 0;
     };
 
     //-------------------------------------------------------------------------
     // Products Pricer
     //-------------------------------------------------------------------------
-    class ProductsPricer : public Agent {
+    class ProductsPricer : public EconomicAgent {
     public:
 
         ProductsPricer(const std::string& path);
@@ -109,7 +109,7 @@ namespace Axionomy {
     //-------------------------------------------------------------------------
     // National Bank simulator entity
     //-------------------------------------------------------------------------
-    class NationalBank : public Agent {
+    class NationalBank : public EconomicAgent {
     public:
         void update(double deltaTime) override;
         double getBaseRate();
@@ -120,7 +120,7 @@ namespace Axionomy {
     //-------------------------------------------------------------------------
     // Household
     //-------------------------------------------------------------------------
-    class Household : public Agent {
+    class Household : public EconomicAgent {
     public:
         void update(double deltaTime) override;
     };
@@ -128,7 +128,7 @@ namespace Axionomy {
     //-------------------------------------------------------------------------
     // Firm
     //-------------------------------------------------------------------------
-    class Firm : public Agent {
+    class Firm : public EconomicAgent {
     public:
         void update(double deltaTime) override;
     };
