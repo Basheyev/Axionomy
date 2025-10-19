@@ -27,6 +27,7 @@ namespace Axionomy {
     //-------------------------------------------------------------------------
     // Product data structure
     //-------------------------------------------------------------------------
+    // TODO: add industry floor margin
     struct Product {
         uint64_t productID;        // Product ID
         ProductType type;          // Good or Service
@@ -36,6 +37,7 @@ namespace Axionomy {
         Quantity demand;           // Aggregate demand quantity
         Quantity supply;           // Aggregate supply quantity  
         double   importance;       // Aggregate consumer importance
+        double   floorMargin;      // Minimal industry margin
         std::string name;          // Product name
         BillOfMaterials materials; // Bill of materials
     };
@@ -70,15 +72,15 @@ namespace Axionomy {
         const std::vector<Product>& getProductsList() const;
         Money getProductPrice(uint64_t productID);
         bool getProductData(uint64_t productID, Product& product);
-        bool setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply);
-        
-        size_t findProductIndexByID(uint64_t id);
-        Money evaluatePrice(uint64_t id);
-        Money evaluateProductCost(uint64_t id);
+        bool setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply);        
+        size_t findProductIndexByID(uint64_t productID);
+        Money evaluateProductPrice(uint64_t productID);
+        Money evaluateProductCost(uint64_t productID);
 
     private:
 
         std::vector<Product> products;
+        std::unordered_map<uint64_t, size_t> indexByID;
 
     };
 

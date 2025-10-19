@@ -34,6 +34,15 @@ target_include_directories(Axionomy PRIVATE
     ${CMAKE_SOURCE_DIR}/src
 )
 
+# Copy Products data to binary directory
+add_custom_command(
+    TARGET Axionomy POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:Axionomy>/data"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/data/products.json"
+        "$<TARGET_FILE_DIR:Axionomy>/data/products.json"
+)
+
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET Axionomy PROPERTY CXX_STANDARD 20)
 endif()

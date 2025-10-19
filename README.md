@@ -15,7 +15,7 @@ The goal is to teach the logic of business formation, supply chains, pricing, an
 
 ## Simulation Layers
 
-### 1. MarketPricer
+### 1. Product Pricer
 A dynamic market engine that:
 - Maintains a catalog of goods and services  
 - Simulates price formation based on demand, supply, and basePrice  
@@ -57,7 +57,7 @@ The player acts as a founder managing their own firm:
 
 | Component | Technology | Description |
 |------------|-------------|-------------|
-| Server | C++17+ | Core simulation engine, tick-based world loop, REST + WebSocket interface |
+| Server | C++20+ | Core simulation engine, tick-based world loop, REST + WebSocket interface |
 | Client | JavaScript / WebGL | Browser-based UI and visualization |
 | Data | JSON / FlatBuffers | Catalogs, agents, and simulation states |
 | Scale Target | 50K–100K agents | Multi-threaded simulation on commodity hardware |
