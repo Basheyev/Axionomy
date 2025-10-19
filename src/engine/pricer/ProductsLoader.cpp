@@ -89,7 +89,8 @@ bool ProductsLoader::validateSchema(json& data) {
         static const char* required[] = {
             "productID","name","type","unit",
             "price","cost","demand","supply",
-            "importance", "floorMargin", "materials"};
+            "importance", "floorMargin", "turnover", 
+            "materials"};
         for (auto key : required)
             if (!productJSON.contains(key)) return false;
 
@@ -119,6 +120,11 @@ bool ProductsLoader::validateSchema(json& data) {
         if (!productJSON["floorMargin"].is_number()) return false;
         double floorMargin = productJSON["floorMargin"].get<double>();
         if (floorMargin < 0 || floorMargin > 1) return false;
+
+        // Check if the "turnover" is number and a non-negative number [0:365]
+        if (!productJSON["turnover"].is_number()) return false;
+        double turnover = productJSON["turnover"].get<double>();
+        if (turnover < 0) return false;
 
         // Check if the "materials" array exists and each entry contains 
         // a non-negative integer "input" field and double "quantity" field
@@ -162,6 +168,7 @@ bool ProductsLoader::loadProduct(json& productData, ProductsList& products) {
     product.supply = productData.value("supply", 0ULL);
     product.importance = productData.value("importance", 0.0);
     product.floorMargin = productData.value("floorMargin", 0.0);
+    product.turnover = productData.value("turnover", 0.0);
     product.name = productData.value("name", "");
     const auto& materialsList = productData["materials"];
 

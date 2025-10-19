@@ -59,7 +59,7 @@ const ProductsList& ProductsPricer::getProductsList() const {
 }
 
 
-size_t ProductsPricer::findProductIndexByID(uint64_t productID) {
+size_t ProductsPricer::getIndexByProductID(uint64_t productID) {
     auto it = indexByID.find(productID);
     if (it == indexByID.end()) return NOT_FOUND;
     return it->second;
@@ -67,29 +67,20 @@ size_t ProductsPricer::findProductIndexByID(uint64_t productID) {
 
 
 Money ProductsPricer::getProductPrice(uint64_t productID) {
-    size_t index = findProductIndexByID(productID);
+    size_t index = getIndexByProductID(productID);
     if (index == NOT_FOUND) return 0ULL;
     return products[index].price;
 }
 
 
-bool ProductsPricer::getProductData(uint64_t productID, Product& product) {
-    size_t index = findProductIndexByID(productID);
-    if (index == NOT_FOUND) return false;
-    product = products[index];
-    return true;
-}
-
-
 bool ProductsPricer::setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply) {
-    size_t index = findProductIndexByID(productID);
+    size_t index = getIndexByProductID(productID);
     if (index == NOT_FOUND) return false;
     Product& productData = products[index];
     productData.demand = demand;
     productData.supply = supply;    
     return true;
 }
-
 
 
 void ProductsPricer::tick(double deltaTime) {
@@ -137,10 +128,10 @@ void ProductsPricer::evaluateProductPrice(Product& product) {
     // evaluate target price
     Money targetPrice = basePrice * std::clamp(sigmoid, minY, maxY);
     
-    // TODO: exponential interpolation of price (make speed adjustable)
-    constexpr double ticksToAdjust = 7.0; // Days to adjust
-    constexpr double alpha = 1.0 / ticksToAdjust;
-    product.price += alpha * (targetPrice - product.price);
+    // Exponential price adjustment toward target value
+    // turnover — average inventory turnover period in days/ticks
+    double speedOfAdjustment = 1.0 / product.turnover;
+    product.price += speedOfAdjustment * (targetPrice - product.price);
 }
 
 

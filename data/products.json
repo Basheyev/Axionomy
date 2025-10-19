@@ -12,6 +12,7 @@
     "supply": 2000,
     "importance": 0.3,
     "floorMargin": 0.0,
+    "turnover": 2,
     "materials": []
 
   },
@@ -24,11 +25,12 @@
     "type": "Good",
     "unit": "Piece",
     "price": 10.0,
-    "cost": 10.0,    
+    "cost": 10.0,
     "demand": 500,
     "supply": 500,
     "importance": 0.2,
     "floorMargin": 0.3,
+    "turnover": 10,
     "materials": [
       {
         "input": 0,
@@ -51,6 +53,7 @@
     "supply": 125,
     "importance": 0.2,
     "floorMargin": 0.4,
+    "turnover": 20,
     "materials": [
       {
         "input": 0,

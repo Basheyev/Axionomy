@@ -11,7 +11,7 @@ using namespace Axionomy;
 void productLoaderTest() {
 
 	ProductsPricer marketPricer("data\\products.json");
-	const std::vector<Product>& products = marketPricer.getProductsList();
+	const ProductsList& products = marketPricer.getProductsList();
 
 	if (products.size() == 0) {
 		cerr << "Product list load failed for some reason \n";
@@ -22,11 +22,12 @@ void productLoaderTest() {
 
 	for (int64_t i = 0; i < 40; i++) {
 		Product product;			
-		marketPricer.setDemandAndSupply(id, 110 - i, 100);		
-		
+
+		marketPricer.setDemandAndSupply(id, 110 - i, 100);			
 		marketPricer.tick(0);
 
-		marketPricer.getProductData(1, product);
+		size_t index = marketPricer.getIndexByProductID(1);
+		product = products[index];
 
 		cout << "Product:" << product.name
 			<< " Demand: " << product.demand

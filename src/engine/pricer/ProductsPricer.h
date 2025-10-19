@@ -37,6 +37,7 @@ namespace Axionomy {
         Quantity supply;           // Aggregate supply quantity  
         double   importance;       // Aggregate consumer importance
         double   floorMargin;      // Minimal industry margin
+        double   turnover;         // Average turnover duration in days
         std::string name;          // Product name
         BillOfMaterials materials; // Bill of materials
     };
@@ -72,12 +73,10 @@ namespace Axionomy {
 
         ProductsPricer(const std::string& path);
         const ProductsList& getProductsList() const;
-        size_t findProductIndexByID(uint64_t productID);
+        size_t getIndexByProductID(uint64_t productID);
         Money getProductPrice(uint64_t productID);
-        bool getProductData(uint64_t productID, Product& product);
         bool setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply);        
-        
-        
+                
         void tick(double deltaTime);
         
     private:
