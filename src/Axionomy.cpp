@@ -12,12 +12,13 @@ void productLoaderTest() {
 
 	ProductsPricer marketPricer("data\\products.json");
 
-	size_t id = marketPricer.getProductsList()[0].productID;
+	const std::vector<Product>& products = marketPricer.getProductsList();
+	size_t id = products[2].productID;
 
 	for (int64_t i = 0; i < 40; i++) {
 		Product product;		
-		marketPricer.setDemandAndSupply(1, 80 + i, 100);
-		marketPricer.getProductData(1, product);
+		marketPricer.setDemandAndSupply(id, 80 + i, 100);
+		marketPricer.getProductData(id, product);
 
 		cout << "Demand: " << product.demand
 			<< " Supply: " << product.supply

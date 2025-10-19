@@ -19,7 +19,7 @@ add_executable (
     
     "src/engine/pricer/ProductsPricer.cpp"     
     "src/engine/pricer/ProductsLoader.cpp" 
-    "src/engine/pricer/MarketPricer.h"
+    "src/engine/pricer/ProductsPricer.h"
 
     "src/engine/CoreEngine.h" 
     "src/engine/CoreEngine.cpp" 

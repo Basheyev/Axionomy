@@ -1,5 +1,5 @@
 
-#include "engine/CoreEngine.h"
+#include "engine/pricer/ProductsPricer.h"
 
 #include <algorithm>
 
@@ -27,6 +27,13 @@ size_t ProductsPricer::findProductIndexByID(uint64_t id) {
         if (products[index].productID == id) return index;
     }
     return NOT_FOUND;
+}
+
+
+Money ProductsPricer::getProductPrice(uint64_t productID) {
+    size_t index = findProductIndexByID(productID);
+    if (index == NOT_FOUND) return 0ULL;
+    return products[index].price;
 }
 
 
@@ -86,11 +93,22 @@ Money ProductsPricer::evaluatePrice(uint64_t id) {
 }
 
 
-bool ProductsPricer::evaluateProductCost(uint64_t productID) {
+Money ProductsPricer::evaluateProductCost(uint64_t productID) {
     size_t index = findProductIndexByID(productID);
-    if (index == NOT_FOUND) return false;
+    if (index == NOT_FOUND) return 0ULL;
     Product& productData = products[index];
 
+    BillOfMaterials& bom = productData.materials;
 
-    return 0ULL;
+    Money cost = 0;
+
+    for (std::pair<uint64_t, double>& component : bom) {
+        Money price = products[component.first].price;
+        double amount = component.second;
+        cost += price * amount;
+    }
+
+    productData.cost = cost;
+
+    return cost;
 }

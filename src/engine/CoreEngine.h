@@ -15,7 +15,7 @@
 #include <cmath>
 #include <string>
 #include <vector>
-#include "engine/pricer/MarketPricer.h"
+#include "engine/pricer/ProductsPricer.h"
 
 
 namespace Axionomy {

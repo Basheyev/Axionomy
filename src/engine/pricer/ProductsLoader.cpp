@@ -42,7 +42,10 @@ size_t ProductsLoader::loadProductList(const std::string& path, std::vector<Prod
     try {
         json productList;
         productListFile >> productList;                             // read file to JSON        
-        if (!validateSchema(productList)) return 0;                 // validate schema
+        if (!validateSchema(productList)) {                         // validate schema
+            std::cerr << "Invalid schema: " << path << '\n';
+            return 0;                 
+        }
         count = productList.size();                                 // if it's an array, get its size 
         products.reserve(count);                                    // Allocate required memory only once
         for (size_t i = 0; i < count; i++) {                        // iterate over the array
@@ -85,7 +88,7 @@ bool ProductsLoader::validateSchema(json& data) {
         // Check required fields
         static const char* required[] = {
             "productID","name","type","unit",
-            "currentPrice","basePrice","demand","supply",
+            "price","cost","demand","supply",
             "importance","materials" };
         for (auto key : required)
             if (!productJSON.contains(key)) return false;
@@ -100,8 +103,8 @@ bool ProductsLoader::validateSchema(json& data) {
             && productJSON["unit"] != "Liter" && productJSON["unit"] != "Hour") return false;
 
         // Check if the "currentPrice" & "basePrice" fields are numbers and a non-negative numbers
-        if (!productJSON["currentPrice"].is_number() || productJSON["currentPrice"].get<double>() >= 0) return false;
-        if (!productJSON["basePrice"].is_number() || productJSON["basePrice"].get<double>() >= 0) return false;
+        if (!productJSON["price"].is_number() || productJSON["price"].get<double>() < 0) return false;
+        if (!productJSON["cost"].is_number() || productJSON["cost"].get<double>() < 0) return false;
 
         // Check if the "demand" & "supply" is integers and a non-negative integers
         if (!productJSON["demand"].is_number_integer() || productJSON["demand"].get<int64_t>() < 0) return false;

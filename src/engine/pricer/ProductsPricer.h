@@ -68,12 +68,13 @@ namespace Axionomy {
 
         ProductsPricer(const std::string& path);
         const std::vector<Product>& getProductsList() const;
+        Money getProductPrice(uint64_t productID);
         bool getProductData(uint64_t productID, Product& product);
         bool setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply);
         
         size_t findProductIndexByID(uint64_t id);
         Money evaluatePrice(uint64_t id);
-        bool evaluateProductCost(uint64_t id);
+        Money evaluateProductCost(uint64_t id);
 
     private:
 
