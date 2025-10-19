@@ -2,7 +2,7 @@
 //
 
 #include "Axionomy.h"
-#include "engine/CoreEngine.h"
+#include "engine/MarketEngine.h"
 
 using namespace std;
 using namespace Axionomy;
@@ -24,7 +24,7 @@ void productLoaderTest() {
 		Product product;			
 
 		marketPricer.setDemandAndSupply(id, 110 - i, 100);			
-		marketPricer.tick(0);
+		marketPricer.update(0);
 
 		size_t index = marketPricer.getIndexByProductID(1);
 		product = products[index];

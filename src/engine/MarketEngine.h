@@ -1,21 +1,29 @@
+/*=============================================================================
+*
+*   Core Engine 
+*   
+*   
+*   (Ñ) Axiom Capital 2025
+* 
+*=============================================================================*/
+
 #pragma once
 
 
+#include <algorithm>
 #include <cstdint>
 #include <cmath>
 #include <string>
 #include <vector>
 #include <iostream>
-#include <utility>
 
 #include "libs/json.hpp"
 
-
 namespace Axionomy {
 
-    constexpr uint64_t NOT_FOUND = 0xFFFFFFFFFFFFFFFF;
-
     using json = nlohmann::json;
+
+    constexpr uint64_t NOT_FOUND = 0xFFFFFFFFFFFFFFFF;
 
     using Money = double;
     using Quantity = int64_t;
@@ -23,11 +31,11 @@ namespace Axionomy {
 
     enum class ProductType : uint32_t { Good, Service };
     enum class ProductUnit : uint32_t { Piece, Kg, Liter, Hour };
-        
+
     //-------------------------------------------------------------------------
     // Product data structure
     //-------------------------------------------------------------------------    
-    struct Product {    
+    struct Product {
         uint64_t productID;        // Product ID
         ProductType type;          // Good or Service
         ProductUnit unit;          // Measurement unit
@@ -53,9 +61,9 @@ namespace Axionomy {
     public:
         static size_t loadProductList(const std::string& path, ProductsList& productsList);
     private:
-        
-        ProductsLoader() = delete;              
-        ~ProductsLoader() = delete;             
+
+        ProductsLoader() = delete;
+        ~ProductsLoader() = delete;
         ProductsLoader(const ProductsLoader&) = delete;
         ProductsLoader& operator=(const ProductsLoader&) = delete;
 
@@ -64,26 +72,81 @@ namespace Axionomy {
         static bool productListContains(uint64_t productID, const ProductsList& productsList);
     };
 
+    //-------------------------------------------------------------------------
+    // Base interface of simulation entity
+    //-------------------------------------------------------------------------
+    class Agent {
+    public:
+        virtual ~Agent() = default;
+        virtual void update(double deltaTime) = 0;
+    };
 
     //-------------------------------------------------------------------------
     // Products Pricer
     //-------------------------------------------------------------------------
-    class ProductsPricer {
+    class ProductsPricer : public Agent {
     public:
 
         ProductsPricer(const std::string& path);
         const ProductsList& getProductsList() const;
-        size_t getIndexByProductID(uint64_t productID);
-        Money getProductPrice(uint64_t productID);
-        bool setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply);        
-                
-        void tick(double deltaTime);
-        
+        size_t getIndexByProductID(uint64_t productID) const;
+        Money getProductPrice(uint64_t productID) const;
+        bool setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply);
+
+        void update(double deltaTime);
+
     private:
         ProductsList products;
         ProductsIndex indexByID;
         void evaluateProductPrice(Product& product);
         void evaluateProductCost(Product& product);
     };
+
+
+
+
+
+    //-------------------------------------------------------------------------
+    // National Bank simulator entity
+    //-------------------------------------------------------------------------
+    class NationalBank : public Agent {
+    public:
+        void update(double deltaTime) override;
+        double getBaseRate();
+    private:
+    };
+
+
+    //-------------------------------------------------------------------------
+    // Household
+    //-------------------------------------------------------------------------
+    class Household : public Agent {
+    public:
+        void update(double deltaTime) override;
+    };
+
+    //-------------------------------------------------------------------------
+    // Firm
+    //-------------------------------------------------------------------------
+    class Firm : public Agent {
+    public:
+        void update(double deltaTime) override;
+    };
+
+
+    //-------------------------------------------------------------------------
+    // Simulation engine core
+    //-------------------------------------------------------------------------
+    class MarketEngine {
+    public:
+
+
+
+    private:
+
+
+
+    };
+
 
 }

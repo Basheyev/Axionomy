@@ -1,12 +1,11 @@
 
 
 #include "engine/MarketEngine.h"
-    
+
 using namespace Axionomy;
 
-void Household::update(double deltaTime) {
-        
-    
+void Firm::update(double deltaTime) {
+
+
 
 }
-

@@ -19,15 +19,15 @@ add_executable (
     
     "src/engine/pricer/ProductsPricer.cpp"     
     "src/engine/pricer/ProductsLoader.cpp" 
-    "src/engine/pricer/ProductsPricer.h"
-
-    "src/engine/CoreEngine.h" 
-    "src/engine/CoreEngine.cpp" 
-    
-    "src/engine/agents/NationalBank.cpp" 
+        
+    "src/engine/agents/Firm.cpp"
     "src/engine/agents/Household.cpp" 
+    "src/engine/agents/NationalBank.cpp" 
+        
+    "src/engine/MarketEngine.h" 
+    "src/engine/MarketEngine.cpp" 
 
-    )
+)
 
 # Добавляем include-путь на корень src
 target_include_directories(Axionomy PRIVATE
