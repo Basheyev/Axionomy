@@ -1,4 +1,4 @@
-# Axionomy — Startup Business Simulator by X Academy
+# Axionomy
 
 **Axionomy** is an educational startup simulator developed by **X Academy** — a web-based game designed to teach the fundamentals of business and startup management through interactive market and agent-based simulation.
 

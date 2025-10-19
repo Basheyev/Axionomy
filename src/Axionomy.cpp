@@ -10,7 +10,7 @@ using namespace Axionomy;
 
 void producTest() {
 
-	MarketPricer marketPricer("data\\products.json");
+	ProductsPricer marketPricer("data\\products.json");
 
 	size_t id = marketPricer.getProductID("Bolt");
 
@@ -27,7 +27,7 @@ void producTest() {
 
 int main()
 {	
-	MarketPricer marketPricer("data\\products.json");
+	ProductsPricer marketPricer("data\\products.json");
 	
 	return 0;
 }

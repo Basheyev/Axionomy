@@ -16,13 +16,23 @@ add_executable (
     Axionomy 
     "src/Axionomy.cpp" 
     "src/Axionomy.h" 
+    
+    "src/engine/pricer/ProductsPricer.cpp"     
+    "src/engine/pricer/ProductsLoader.cpp" 
+    "src/engine/pricer/MarketPricer.h"
+
     "src/engine/CoreEngine.h" 
     "src/engine/CoreEngine.cpp" 
+    
     "src/engine/agents/NationalBank.cpp" 
     "src/engine/agents/Household.cpp" 
-    "src/engine/pricer/MarketPricer.cpp" 
-    
- )
+
+    )
+
+# Добавляем include-путь на корень src
+target_include_directories(Axionomy PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET Axionomy PROPERTY CXX_STANDARD 20)
