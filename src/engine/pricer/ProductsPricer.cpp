@@ -7,9 +7,13 @@
 using namespace Axionomy;
 
 
-ProductsPricer::ProductsPricer(const std::string& path) {
-    products.reserve(16);
+ProductsPricer::ProductsPricer(const std::string& path) {    
     size_t productsCount = ProductsLoader::loadProductList(path, products);
+    if (productsCount == 0) {
+
+        // TODO: do something about absenñe of file
+
+    }
 }
 
 

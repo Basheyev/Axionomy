@@ -21,7 +21,7 @@ namespace Axionomy {
 
     enum class ProductType : uint32_t { Good, Service };
     enum class ProductUnit : uint32_t { Piece, Kg, Liter, Hour };
-
+        
     //-------------------------------------------------------------------------
     // Product data structure
     //-------------------------------------------------------------------------
@@ -59,7 +59,7 @@ namespace Axionomy {
 
 
     //-------------------------------------------------------------------------
-    // Market Pricer
+    // Products Pricer
     //-------------------------------------------------------------------------
     class ProductsPricer {
     public:

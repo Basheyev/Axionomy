@@ -1,10 +1,32 @@
-
+/**
+ * @class ProductsLoader
+ * @brief Loads and validates a list of products from a JSON file.
+ *
+ * The ProductsLoader class is responsible for reading product data from
+ * a JSON file, validating its schema, and populating a list of Product
+ * structures. It ensures that each product entry contains all required
+ * fields, correct data types, and valid values.
+ *
+ * Main responsibilities:
+ *  - Parse JSON file containing products.
+ *  - Validate data schema and field consistency.
+ *  - Detect duplicates and missing dependencies.
+ *  - Convert JSON objects into Product structures.
+ *
+ * Returns the total number of successfully loaded products or zero
+ * if validation or parsing fails.
+ *
+ * (C) Axionomy, Bolat Basheyev 2025
+ * 
+ **/
 #include "engine/CoreEngine.h"
 
 #include <iostream>
 #include <utility>
 
 using namespace Axionomy;
+
+
 /**
 *  @brief Loads product list from JSON file
 *  @param path relative path
@@ -18,7 +40,8 @@ size_t ProductsLoader::loadProductList(const std::string& path, std::vector<Prod
         json productList;
         productListFile >> productList;                             // read file to JSON        
         if (!validateSchema(productList)) return 0;                 // validate schema
-        count = productList.size();                                 // if it's an array, get its size        
+        count = productList.size();                                 // if it's an array, get its size 
+        products.reserve(count);                                    // Allocate required memory only once
         for (size_t i = 0; i < count; i++) {                        // iterate over the array
             json productJSON = productList.at(i);                   // get each product object
             if (!loadProduct(productJSON, products)) {              // load product description or return zero on failure                
