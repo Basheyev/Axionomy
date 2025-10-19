@@ -17,12 +17,12 @@ add_executable (
     "src/Axionomy.cpp" 
     "src/Axionomy.h" 
     
-    "src/engine/pricer/ProductsPricer.cpp"     
-    "src/engine/pricer/ProductsLoader.cpp" 
+    "src/engine/market/ProductsPricer.cpp"     
+    "src/engine/market/ProductsLoader.cpp" 
         
-    "src/engine/agents/Firm.cpp"
-    "src/engine/agents/Household.cpp" 
-    "src/engine/agents/NationalBank.cpp" 
+    "src/engine/entities/Firm.cpp"
+    "src/engine/entities/Household.cpp" 
+    "src/engine/entities/NationalBank.cpp" 
         
     "src/engine/MarketEngine.h" 
     "src/engine/MarketEngine.cpp" 
