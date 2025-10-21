@@ -81,7 +81,7 @@ bool ProductsPricer::setDemandAndSupply(uint64_t productID, Quantity demand, Qua
 }
 
 
-void ProductsPricer::update(double deltaTime) {
+void ProductsPricer::tick() {
 
     for (Product& product : products) {
         evaluateProductPrice(product);
@@ -135,12 +135,12 @@ void ProductsPricer::evaluateProductPrice(Product& product) {
 
 void ProductsPricer::evaluateProductCost(Product& product) {
 
-    BillOfMaterials& bom = product.materials;
+    const BillOfMaterials& bom = product.materials;
 
     Money cost = 0;
 
     if (bom.size() > 0) {
-        for (std::pair<uint64_t, double>& component : bom) {
+        for (const std::pair<uint64_t, double>& component : bom) {
             uint64_t componentID = component.first;
             // straightforward non recursive approach
             Money price = getProductPrice(componentID);

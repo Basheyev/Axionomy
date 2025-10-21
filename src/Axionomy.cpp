@@ -24,7 +24,7 @@ void productLoaderTest() {
 		Product product;			
 
 		marketPricer.setDemandAndSupply(id, 110 - i, 100);			
-		marketPricer.update(0);
+		marketPricer.tick();
 
 		size_t index = marketPricer.getIndexByProductID(1);
 		product = products[index];

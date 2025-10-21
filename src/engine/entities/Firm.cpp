@@ -4,7 +4,7 @@
 
 using namespace Axionomy;
 
-void Firm::update(double deltaTime) {
+void Firm::tick() {
 
 
 

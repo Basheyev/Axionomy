@@ -197,7 +197,7 @@ bool ProductsLoader::loadProduct(json& productData, ProductsList& products) {
 *  @param products output vector of products
 *  @return true if the schema is valid, false otherwise
 */
-bool ProductsLoader::productListContains(uint64_t productID, const ProductsList& products) {
+bool ProductsLoader::productListContains(ProductID productID, const ProductsList& products) {
     for (const Product& product : products) {
         if (product.productID == productID) return true;
     }

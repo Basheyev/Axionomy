@@ -5,7 +5,7 @@
 using namespace Axionomy;
 
 
-void NationalBank::update(double deltaTime) {
+void NationalBank::tick() {
 
 }
 

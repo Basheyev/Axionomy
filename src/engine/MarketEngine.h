@@ -27,16 +27,18 @@ namespace Axionomy {
 
     using Money = double;
     using Quantity = int64_t;
-    using BillOfMaterials = std::vector<std::pair<uint64_t, double>>;
+    using ProductID = uint32_t;
+    using AgentID = uint32_t;
+    using BillOfMaterials = std::vector<std::pair<ProductID, double>>;
 
-    enum class ProductType : uint32_t { Good, Service };
-    enum class ProductUnit : uint32_t { Piece, Kg, Liter, Hour };
+    enum class ProductType : uint16_t { Good, Service };
+    enum class ProductUnit : uint16_t { Piece, Kg, Liter, Hour };
 
     //-------------------------------------------------------------------------
     // Product data structure
     //-------------------------------------------------------------------------    
     struct Product {
-        uint64_t productID;        // Product ID
+        ProductID productID;       // Product ID
         ProductType type;          // Good or Service
         ProductUnit unit;          // Measurement unit
         Money    price;            // Market price
@@ -69,22 +71,14 @@ namespace Axionomy {
 
         static bool validateSchema(json& productList);
         static bool loadProduct(json& productData, ProductsList& productsList);
-        static bool productListContains(uint64_t productID, const ProductsList& productsList);
+        static bool productListContains(ProductID productID, const ProductsList& productsList);
     };
 
-    //-------------------------------------------------------------------------
-    // Base interface of simulation entity
-    //-------------------------------------------------------------------------
-    class EconomicAgent {
-    public:
-        virtual ~EconomicAgent() = default;
-        virtual void update(double deltaTime) = 0;
-    };
 
     //-------------------------------------------------------------------------
     // Products Pricer
     //-------------------------------------------------------------------------
-    class ProductsPricer : public EconomicAgent {
+    class ProductsPricer {
     public:
 
         ProductsPricer(const std::string& path);
@@ -93,7 +87,7 @@ namespace Axionomy {
         Money getProductPrice(uint64_t productID) const;
         bool setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply);
 
-        void update(double deltaTime);
+        void tick();
 
     private:
         ProductsList products;
@@ -103,6 +97,21 @@ namespace Axionomy {
     };
 
 
+    //-------------------------------------------------------------------------
+    // Base interface of simulation entity
+    //-------------------------------------------------------------------------
+    class EconomicAgent {
+    public:
+        virtual ~EconomicAgent() = default;
+        virtual void tick() = 0;
+    protected:
+        AgentID  agentID;             // Agent ID
+        uint32_t rngSeed;             // 
+
+        // Buy (demand input) household
+        // Sell (supply output)
+
+    };
 
 
 
@@ -111,9 +120,10 @@ namespace Axionomy {
     //-------------------------------------------------------------------------
     class NationalBank : public EconomicAgent {
     public:
-        void update(double deltaTime) override;
+        void tick() override;
         double getBaseRate();
     private:
+
     };
 
 
@@ -122,7 +132,7 @@ namespace Axionomy {
     //-------------------------------------------------------------------------
     class Household : public EconomicAgent {
     public:
-        void update(double deltaTime) override;
+        void tick() override;
     };
 
     //-------------------------------------------------------------------------
@@ -130,7 +140,7 @@ namespace Axionomy {
     //-------------------------------------------------------------------------
     class Firm : public EconomicAgent {
     public:
-        void update(double deltaTime) override;
+        void tick() override;
     };
 
 
