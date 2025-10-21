@@ -26,17 +26,14 @@ namespace Axionomy {
     constexpr uint64_t NOT_FOUND = 0xFFFFFFFFFFFFFFFF;
 
     using Money = double;
-    using Quantity = int64_t;
+    using Quantity = double;
     using ProductID = uint32_t;
     using AgentID = uint32_t;
-    
-    struct InputResource {
+    struct Item {
         ProductID productID;
-        double quantity;
+        Quantity quantity;
     };
-
-    using BillOfMaterials = std::vector<InputResource>;
-
+    using BillOfMaterials = std::vector<Item>;
     enum class ProductType : uint16_t { Good, Service };
     enum class ProductUnit : uint16_t { Piece, Kg, Liter, Hour };
 
@@ -112,7 +109,6 @@ namespace Axionomy {
         virtual void tick() = 0;
     protected:
         AgentID  agentID;             // Agent ID
-        uint32_t rngSeed;             // 
 
         // Buy (demand input) household
         // Sell (supply output)

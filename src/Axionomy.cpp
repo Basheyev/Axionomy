@@ -18,9 +18,9 @@ void productLoaderTest() {
 		return;
 	}
 
-	size_t id = products[2].productID;
+	ProductID id = products[2].productID;
 
-	for (int64_t i = 0; i < 40; i++) {
+	for (Quantity i = 0; i < 40; i++) {
 		Product product;			
 
 		marketPricer.setDemandAndSupply(id, 110 - i, 100);			

@@ -140,7 +140,7 @@ void ProductsPricer::evaluateProductCost(Product& product) {
     Money cost = 0;
 
     if (billOfMaterials.size() > 0) {
-        for (const InputResource& component : billOfMaterials) {
+        for (const Item& component : billOfMaterials) {
             // straightforward non recursive approach
             Money price = getProductPrice(component.productID);            
             cost += price * component.quantity;

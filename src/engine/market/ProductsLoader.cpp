@@ -110,8 +110,8 @@ bool ProductsLoader::validateSchema(json& data) {
         if (!productJSON["cost"].is_number() || productJSON["cost"].get<double>() < 0) return false;
 
         // Check if the "demand" & "supply" is integers and a non-negative integers
-        if (!productJSON["demand"].is_number_integer() || productJSON["demand"].get<int64_t>() < 0) return false;
-        if (!productJSON["supply"].is_number_integer() || productJSON["supply"].get<int64_t>() < 0) return false;
+        if (!productJSON["demand"].is_number() || productJSON["demand"].get<double>() < 0) return false;
+        if (!productJSON["supply"].is_number() || productJSON["supply"].get<double>() < 0) return false;
 
         // Check if the "importance" is number and a non-negative number [0:1]
         if (!productJSON["importance"].is_number()) return false;
@@ -166,8 +166,8 @@ bool ProductsLoader::loadProduct(json& productData, ProductsList& products) {
     if (unitStr == "Hour")   product.unit = ProductUnit::Hour;
     product.price = productData.value("price", 0.0);
     product.cost = productData.value("cost", 0.0);
-    product.demand = productData.value("demand", 0ULL);
-    product.supply = productData.value("supply", 0ULL);
+    product.demand = productData.value("demand", 0.0);
+    product.supply = productData.value("supply", 0.0);
     product.importance = productData.value("importance", 0.0);
     product.floorMargin = productData.value("floorMargin", 0.0);
     product.turnover = productData.value("turnover", 0.0);
