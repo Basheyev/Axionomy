@@ -151,7 +151,7 @@ bool ProductsLoader::validateSchema(json& data) {
 bool ProductsLoader::loadProduct(json& productData, ProductsList& products) {
 
     // Check for duplicates
-    uint64_t id = productData.value("productID", 0);;
+    uint32_t id = productData.value("productID", 0);;
     if (productListContains(id, products)) return false;
 
     // Fetch fields from JSON to Product object
@@ -177,10 +177,10 @@ bool ProductsLoader::loadProduct(json& productData, ProductsList& products) {
     product.materials.reserve(materialsList.size());
 
     for (const auto& material : materialsList) {
-        uint64_t input = material.at("input").get<uint64_t>();
+        ProductID input = material.at("input").get<ProductID>();
         double quantity = material.at("quantity").get<double>();
         // check if input exist in the product list
-        if (!productListContains(input, products)) return false;
+        if (!productListContains(input, products)) return false;        
         product.materials.push_back({ input, quantity });
     }
 

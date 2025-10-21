@@ -135,17 +135,15 @@ void ProductsPricer::evaluateProductPrice(Product& product) {
 
 void ProductsPricer::evaluateProductCost(Product& product) {
 
-    const BillOfMaterials& bom = product.materials;
+    const BillOfMaterials& billOfMaterials = product.materials;
 
     Money cost = 0;
 
-    if (bom.size() > 0) {
-        for (const std::pair<uint64_t, double>& component : bom) {
-            uint64_t componentID = component.first;
+    if (billOfMaterials.size() > 0) {
+        for (const InputResource& component : billOfMaterials) {
             // straightforward non recursive approach
-            Money price = getProductPrice(componentID);
-            double amount = component.second;
-            cost += price * amount;
+            Money price = getProductPrice(component.productID);            
+            cost += price * component.quantity;
         }
         product.cost = cost;
     }     

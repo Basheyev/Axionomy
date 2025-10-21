@@ -29,7 +29,13 @@ namespace Axionomy {
     using Quantity = int64_t;
     using ProductID = uint32_t;
     using AgentID = uint32_t;
-    using BillOfMaterials = std::vector<std::pair<ProductID, double>>;
+    
+    struct InputResource {
+        ProductID productID;
+        double quantity;
+    };
+
+    using BillOfMaterials = std::vector<InputResource>;
 
     enum class ProductType : uint16_t { Good, Service };
     enum class ProductUnit : uint16_t { Piece, Kg, Liter, Hour };
