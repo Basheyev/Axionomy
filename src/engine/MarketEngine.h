@@ -23,7 +23,7 @@ namespace Axionomy {
 
     using json = nlohmann::json;
 
-    constexpr uint64_t NOT_FOUND = 0xFFFFFFFFFFFFFFFF;
+    constexpr size_t NOT_FOUND = 0xFFFFFFFFFFFFFFFF;
 
     using Money = double;
     using Quantity = double;
@@ -103,15 +103,19 @@ namespace Axionomy {
     //-------------------------------------------------------------------------
     // Base interface of simulation entity
     //-------------------------------------------------------------------------
+    enum class EconomicAgentType : uint16_t { Household, Firm, NationalBank };
     class EconomicAgent {
     public:
         virtual ~EconomicAgent() = default;
         virtual void tick() = 0;
     protected:
         AgentID  agentID;             // Agent ID
-
-        // Buy (demand input) household
-        // Sell (supply output)
+        std::vector<Item> inputs;     // Buy (demand input)
+        std::vector<Item> inventory;  // Inventory (stock)
+        std::vector<Item> outputs;    // Sell (supply output)
+        
+        Money cash;
+        Money debt;
 
     };
 
@@ -125,7 +129,7 @@ namespace Axionomy {
         void tick() override;
         double getBaseRate();
     private:
-
+        double baseRate;
     };
 
 
