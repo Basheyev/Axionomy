@@ -59,7 +59,7 @@ namespace Axionomy {
     };
 
     using ProductsList = std::vector<Product>;
-    using ProductsIndex = std::unordered_map<uint64_t, size_t>;
+    using ProductsIndex = std::unordered_map<ProductID, size_t>;
 
 
     //-------------------------------------------------------------------------
@@ -89,9 +89,9 @@ namespace Axionomy {
 
         ProductsPricer(const std::string& path);
         const ProductsList& getProductsList() const;
-        size_t getIndexByProductID(uint64_t productID) const;
-        Money getProductPrice(uint64_t productID) const;
-        bool setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply);
+        size_t getIndexByProductID(ProductID productID) const;
+        Money getProductPrice(ProductID productID) const;
+        bool setDemandAndSupply(ProductID productID, Quantity demand, Quantity supply);
 
         void tick();
 

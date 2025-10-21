@@ -45,7 +45,7 @@ ProductsPricer::ProductsPricer(const std::string& path) {
     // Create index
     indexByID.reserve(productsCount);
     for (size_t index = 0; index < products.size(); index++) {
-        uint64_t id = products[index].productID;
+        ProductID id = products[index].productID;
         indexByID.emplace(id, index);
     }
 
@@ -57,21 +57,21 @@ const ProductsList& ProductsPricer::getProductsList() const {
 }
 
 
-size_t ProductsPricer::getIndexByProductID(uint64_t productID) const {
+size_t ProductsPricer::getIndexByProductID(ProductID productID) const {
     auto it = indexByID.find(productID);
     if (it == indexByID.end()) return NOT_FOUND;
     return it->second;
 }
 
 
-Money ProductsPricer::getProductPrice(uint64_t productID) const {
+Money ProductsPricer::getProductPrice(ProductID productID) const {
     size_t index = getIndexByProductID(productID);
     if (index == NOT_FOUND) return 0ULL;
     return products[index].price;
 }
 
 
-bool ProductsPricer::setDemandAndSupply(uint64_t productID, Quantity demand, Quantity supply) {
+bool ProductsPricer::setDemandAndSupply(ProductID productID, Quantity demand, Quantity supply) {
     size_t index = getIndexByProductID(productID);
     if (index == NOT_FOUND) return false;
     Product& productData = products[index];
