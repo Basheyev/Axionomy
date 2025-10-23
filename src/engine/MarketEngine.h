@@ -3,7 +3,7 @@
 *   Core Engine 
 *   
 *   
-*   (Ñ) Axiom Capital 2025
+*   (Ã‘) Axiom Capital 2025
 * 
 *=============================================================================*/
 
@@ -156,8 +156,11 @@ namespace Axionomy {
     class MarketEngine {
     public:
 
-
-
+    // for each tick (day)
+       // AggregateSupplyDemand()
+       // ComputeEquilibriumPrice()
+       // clearMarketProRata()
+       // updateAgentsState()
     private:
 
 
