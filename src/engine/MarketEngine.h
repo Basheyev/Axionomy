@@ -85,6 +85,7 @@ namespace Axionomy {
     public:
 
         ProductsPricer(const std::string& path);
+
         const ProductsList& getProductsList() const;
         size_t getIndexByProductID(ProductID productID) const;
         Money getProductPrice(ProductID productID) const;
@@ -109,9 +110,12 @@ namespace Axionomy {
         virtual ~EconomicAgent() = default;
         virtual void tick() = 0;
     protected:
+        
         AgentID  agentID;             // Agent ID
-        std::vector<Item> inputs;     // Buy (demand input)
+
         std::vector<Item> inventory;  // Inventory (stock)
+
+        std::vector<Item> inputs;     // Buy (demand input)        
         std::vector<Item> outputs;    // Sell (supply output)
         
         Money cash;
@@ -156,13 +160,19 @@ namespace Axionomy {
     class MarketEngine {
     public:
 
-    // for each tick (day)
-       // AggregateSupplyDemand()
-       // ComputeEquilibriumPrice()
-       // clearMarketProRata()
-       // updateAgentsState()
+        MarketEngine(const std::string& productsList);
+
+        void tick();
+
     private:
 
+        ProductsPricer marketPricer;
+        std::vector<EconomicAgent> agents;
+        
+        void aggregateSupplyDemand();
+        void computeEquilibriumPrice();
+        void clearMarketProRata();
+        void updateAgentsState();
 
 
     };
