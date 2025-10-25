@@ -1,6 +1,6 @@
 # Axionomy
 
-**Axionomy** is an educational startup simulator developed by **X Academy** — a web-based game designed to teach the fundamentals of business and startup management through interactive market and agent-based simulation.
+**Axionomy** is an educational simulator - a web-based game designed to teach the fundamentals of business and startup management through interactive market and agent-based simulation.
 
 The project combines a **high-performance C++ simulation server** with a **JavaScript browser client**, creating a responsive, data-driven world where markets, firms, and households evolve dynamically over time.
 
