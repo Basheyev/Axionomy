@@ -38,12 +38,19 @@ namespace Axionomy {
     using BillOfMaterials = std::vector<Item>;
     enum class OrderSide : uint16_t { Buy, Sell };
     
+    //-------------------------------------------------------------------------
+    // Order data structure
+    //-------------------------------------------------------------------------
     struct Order : Item {
         Money price;
         OrderSide side;
     };
 
+    //-------------------------------------------------------------------------
+    // Contract data structure
+    //-------------------------------------------------------------------------
     struct Contract : Order {
+        // do I need side?
         AgentID buyer;
         AgentID seller;
     };
@@ -117,10 +124,17 @@ namespace Axionomy {
     // Market Context - information Asymmetry & Bounded Rationality mechanism
     //-------------------------------------------------------------------------
     struct MarketContext {
-    
+        
+        // Market Visibility
 
     };
 
+
+    struct SellerPerception {
+        AgentID id;
+        float   awareness;
+        float   nps;
+    };
 
     //-------------------------------------------------------------------------
     // Base interface of simulation entity
@@ -136,9 +150,7 @@ namespace Axionomy {
         std::vector<Order> bids;      // Buy orders
         std::vector<Order> asks;      // Sell orders
 
-        // TODO: Agent's memory sellers awareness & perception (NPS),
-        // successes & failures, quality metric to affects its perception.
-        // All this adds information assymetry and NPS
+        std::vector<SellerPerception> sellersPerception;
 
         Money cash{ 0 };
         Money debt{ 0 };
