@@ -13,16 +13,16 @@ MarketEngine::MarketEngine(const std::string& productsList) : productsPricer(pro
 }
 
 
-void MarketEngine::tick() {    
-    aggregateSupplyDemand(aggregateDemand, aggregateSupply);
-    computeEquilibriumPrice(aggregateDemand, aggregateSupply);
-    clearMarketProRata(aggregateDemand, aggregateSupply);
+void MarketEngine::processTick() {    
+    aggregateSupplyDemand();
+    computeEquilibriumPrice();
+    marketClearing();
     updateAgentsState();
     tickCounter++;
 }
 
 
-void MarketEngine::aggregateSupplyDemand(ProductsAggregate& demand, ProductsAggregate& supply) {
+void MarketEngine::aggregateSupplyDemand() {
 
     // Clear aggregates
     for (auto& [key, value] : aggregateDemand) value = 0;
@@ -31,17 +31,17 @@ void MarketEngine::aggregateSupplyDemand(ProductsAggregate& demand, ProductsAggr
     // Compute demand/supply aggregates
     for (const EconomicAgent& agent : agents) {
         for (const Item& inputItem : agent.bids)
-            demand[inputItem.productID] += inputItem.quantity;
+            aggregateDemand[inputItem.productID] += inputItem.quantity;
         for (const Item& outputItem : agent.asks)
-            supply[outputItem.productID] += outputItem.quantity;
+            aggregateSupply[outputItem.productID] += outputItem.quantity;
     }
 
 }
 
 
-void MarketEngine::computeEquilibriumPrice(const ProductsAggregate& demand, const ProductsAggregate& supply) {
+void MarketEngine::computeEquilibriumPrice() {
 
-    ProductsList productsList = productsPricer.getProductsList();
+    const ProductsList& productsList = productsPricer.getProductsList();
 
     for (const Product& product : productsList) {
         Quantity totalDemand = aggregateDemand[product.productID];
@@ -52,10 +52,11 @@ void MarketEngine::computeEquilibriumPrice(const ProductsAggregate& demand, cons
 }
 
 
-void MarketEngine::clearMarketProRata(ProductsAggregate& demand, ProductsAggregate& supply) {
+void MarketEngine::marketClearing() {
 
 
-    // clear between agent pro rata
+    // TODO: Make clearing by prices and volumes, and pro rata in same price segment  
+    // TODO: make contracts and fulfillment
 
 
 }
@@ -63,6 +64,7 @@ void MarketEngine::clearMarketProRata(ProductsAggregate& demand, ProductsAggrega
 
 void MarketEngine::updateAgentsState() {
     for (EconomicAgent& agent : agents) {
-        agent.tick();
+        MarketContext mc;
+        agent.tick(mc);
     }
 }

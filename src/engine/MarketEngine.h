@@ -29,14 +29,25 @@ namespace Axionomy {
     using Quantity = double;
     using ProductID = uint32_t;
     using AgentID = uint32_t;
+    
     struct Item {
         ProductID productID;
         Quantity quantity;
     };
+    
+    using BillOfMaterials = std::vector<Item>;
+    enum class OrderSide : uint16_t { Buy, Sell };
+    
     struct Order : Item {
         Money price;
+        OrderSide side;
     };
-    using BillOfMaterials = std::vector<Item>;
+
+    struct Contract : Order {
+        AgentID buyer;
+        AgentID seller;
+    };
+    
     enum class ProductType : uint16_t { Good, Service };
     enum class ProductUnit : uint16_t { Piece, Kg, Liter, Hour };
 
@@ -102,6 +113,14 @@ namespace Axionomy {
         void evaluateProductCost(Product& product);
     };
 
+    //-------------------------------------------------------------------------
+    // Market Context - information Asymmetry & Bounded Rationality mechanism
+    //-------------------------------------------------------------------------
+    struct MarketContext {
+    
+
+    };
+
 
     //-------------------------------------------------------------------------
     // Base interface of simulation entity
@@ -110,12 +129,17 @@ namespace Axionomy {
     class EconomicAgent {
     public:
         virtual ~EconomicAgent() = default;
-        virtual void tick() = 0;
+        virtual void tick(MarketContext&) = 0;
     protected:
         AgentID  agentID;             // Agent ID
         std::vector<Item> inventory;  // Inventory (stock)
         std::vector<Order> bids;      // Buy orders
         std::vector<Order> asks;      // Sell orders
+
+        // TODO: Agent's memory sellers awareness & perception (NPS),
+        // successes & failures, quality metric to affects its perception.
+        // All this adds information assymetry and NPS
+
         Money cash{ 0 };
         Money debt{ 0 };
 
@@ -131,7 +155,7 @@ namespace Axionomy {
 
         MarketEngine(const std::string& productsList);
 
-        void tick();
+        void processTick();
 
     private:
 
@@ -140,10 +164,12 @@ namespace Axionomy {
         std::unordered_map<ProductID, Quantity> aggregateDemand;
         std::unordered_map<ProductID, Quantity> aggregateSupply;
         std::vector<EconomicAgent> agents;
+        std::vector<Order> orders;
+        std::vector<Contract> contracts;
         
-        void aggregateSupplyDemand(ProductsAggregate& demand, ProductsAggregate& supply);
-        void computeEquilibriumPrice(const ProductsAggregate& demand, const ProductsAggregate& supply);
-        void clearMarketProRata(ProductsAggregate& demand, ProductsAggregate& supply);
+        void aggregateSupplyDemand();
+        void computeEquilibriumPrice();
+        void marketClearing();
         void updateAgentsState();
 
 
@@ -155,7 +181,7 @@ namespace Axionomy {
     //-------------------------------------------------------------------------
     class Household : public EconomicAgent {
     public:
-        void tick() override;
+        void tick(MarketContext&) override;
     };
 
     //-------------------------------------------------------------------------
@@ -163,7 +189,7 @@ namespace Axionomy {
     //-------------------------------------------------------------------------
     class Firm : public EconomicAgent {
     public:
-        void tick() override;
+        void tick(MarketContext&) override;
     };
 
 

@@ -4,7 +4,7 @@
 
 using namespace Axionomy;
 
-void Firm::tick() {
+void Firm::tick(MarketContext&) {
 
 
 

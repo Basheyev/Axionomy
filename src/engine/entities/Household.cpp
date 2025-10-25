@@ -4,7 +4,7 @@
     
 using namespace Axionomy;
 
-void Household::tick() {
+void Household::tick(MarketContext&) {
         
     
 
