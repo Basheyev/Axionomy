@@ -1,9 +1,9 @@
 /*=============================================================================
 *
-*   Core Engine 
+*   Market Engine 
 *   
 *   
-*   (Ñ) Axiom Capital 2025
+*   (C) Axiom Capital 2025
 * 
 *=============================================================================*/
 
@@ -57,6 +57,7 @@ namespace Axionomy {
 
     using ProductsList = std::vector<Product>;
     using ProductsIndex = std::unordered_map<ProductID, size_t>;
+    using ProductsAggregate = std::unordered_map<ProductID, Quantity>;
 
 
     //-------------------------------------------------------------------------
@@ -89,9 +90,7 @@ namespace Axionomy {
         const ProductsList& getProductsList() const;
         size_t getIndexByProductID(ProductID productID) const;
         Money getProductPrice(ProductID productID) const;
-        bool setDemandAndSupply(ProductID productID, Quantity demand, Quantity supply);
-
-        void tick();
+        bool computeEquilibriumPrice(ProductID productID, Quantity demand, Quantity supply);
 
     private:
         ProductsList products;
@@ -104,7 +103,7 @@ namespace Axionomy {
     //-------------------------------------------------------------------------
     // Base interface of simulation entity
     //-------------------------------------------------------------------------
-    enum class EconomicAgentType : uint16_t { Household, Firm, NationalBank };
+    enum class EconomicAgentType : uint16_t { Household, Firm };
     class EconomicAgent {
     public:
         virtual ~EconomicAgent() = default;
@@ -115,25 +114,41 @@ namespace Axionomy {
 
         std::vector<Item> inventory;  // Inventory (stock)
 
-        std::vector<Item> inputs;     // Buy (demand input)        
-        std::vector<Item> outputs;    // Sell (supply output)
+        std::vector<Item> demandedInputs; 
+        std::vector<Item> suppliedOutputs;
         
         Money cash;
         Money debt;
 
+        friend class MarketEngine;
+
     };
 
 
-
     //-------------------------------------------------------------------------
-    // National Bank simulator entity
+    // Market simulation engine core
     //-------------------------------------------------------------------------
-    class NationalBank : public EconomicAgent {
+    class MarketEngine {
     public:
-        void tick() override;
-        double getBaseRate();
+
+        MarketEngine(const std::string& productsList);
+
+        void tick();
+
     private:
-        double baseRate;
+
+        size_t tickCounter;
+        ProductsPricer productsPricer;
+        std::unordered_map<ProductID, Quantity> aggregateDemand;
+        std::unordered_map<ProductID, Quantity> aggregateSupply;
+        std::vector<EconomicAgent> agents;
+        
+        void aggregateSupplyDemand(ProductsAggregate& demand, ProductsAggregate& supply);
+        void computeEquilibriumPrice(const ProductsAggregate& demand, const ProductsAggregate& supply);
+        void clearMarketProRata(ProductsAggregate& demand, ProductsAggregate& supply);
+        void updateAgentsState();
+
+
     };
 
 
@@ -151,30 +166,6 @@ namespace Axionomy {
     class Firm : public EconomicAgent {
     public:
         void tick() override;
-    };
-
-
-    //-------------------------------------------------------------------------
-    // Simulation engine core
-    //-------------------------------------------------------------------------
-    class MarketEngine {
-    public:
-
-        MarketEngine(const std::string& productsList);
-
-        void tick();
-
-    private:
-
-        ProductsPricer marketPricer;
-        std::vector<EconomicAgent> agents;
-        
-        void aggregateSupplyDemand();
-        void computeEquilibriumPrice();
-        void clearMarketProRata();
-        void updateAgentsState();
-
-
     };
 
 

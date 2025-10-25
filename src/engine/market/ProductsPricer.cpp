@@ -71,23 +71,15 @@ Money ProductsPricer::getProductPrice(ProductID productID) const {
 }
 
 
-bool ProductsPricer::setDemandAndSupply(ProductID productID, Quantity demand, Quantity supply) {
+bool ProductsPricer::computeEquilibriumPrice(ProductID productID, Quantity demand, Quantity supply) {
     size_t index = getIndexByProductID(productID);
     if (index == NOT_FOUND) return false;
     Product& productData = products[index];
     productData.demand = demand;
     productData.supply = supply;    
+    evaluateProductPrice(productData);
     return true;
 }
-
-
-void ProductsPricer::tick() {
-
-    for (Product& product : products) {
-        evaluateProductPrice(product);
-    }
-}
-
 
 
 void ProductsPricer::evaluateProductPrice(Product& product) {

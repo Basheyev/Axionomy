@@ -18,15 +18,14 @@ void productLoaderTest() {
 		return;
 	}
 
-	ProductID id = products[2].productID;
+	ProductID id = 2;
 
 	for (Quantity i = 0; i < 40; i++) {
 		Product product;			
 
-		marketPricer.setDemandAndSupply(id, 110 - i, 100);			
-		marketPricer.tick();
-
-		size_t index = marketPricer.getIndexByProductID(1);
+		marketPricer.computeEquilibriumPrice(id, 110 - i, 100);			
+		
+		size_t index = marketPricer.getIndexByProductID(id);
 		product = products[index];
 
 		cout << "Product:" << product.name

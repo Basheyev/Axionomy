@@ -5,39 +5,64 @@
 using namespace Axionomy;
 
 
-MarketEngine::MarketEngine(const std::string& productsList) : marketPricer(productsList) {
-
+MarketEngine::MarketEngine(const std::string& productsList) : productsPricer(productsList) {
+    tickCounter = 0;
+    size_t productsCount = productsPricer.getProductsList().size();
+    aggregateDemand.reserve(productsCount);
+    aggregateSupply.reserve(productsCount);
 }
 
 
-void MarketEngine::tick() {
-    
-    
+void MarketEngine::tick() {    
+    aggregateSupplyDemand(aggregateDemand, aggregateSupply);
+    computeEquilibriumPrice(aggregateDemand, aggregateSupply);
+    clearMarketProRata(aggregateDemand, aggregateSupply);
+    updateAgentsState();
+    tickCounter++;
 }
 
 
-void MarketEngine::aggregateSupplyDemand() {
-    
+void MarketEngine::aggregateSupplyDemand(ProductsAggregate& demand, ProductsAggregate& supply) {
+
+    // Clear aggregates
+    for (auto& [key, value] : aggregateDemand) value = 0;
+    for (auto& [key, value] : aggregateSupply) value = 0;
+
+    // Compute demand/supply aggregates
     for (const EconomicAgent& agent : agents) {
-
-        // accumulate supply
-        // accumulate demand
-        // accumulate stock
+        for (const Item& inputItem : agent.demandedInputs)
+            demand[inputItem.productID] += inputItem.quantity;
+        for (const Item& outputItem : agent.suppliedOutputs)
+            supply[outputItem.productID] += outputItem.quantity;
     }
 
 }
 
 
-void MarketEngine::computeEquilibriumPrice() {
+void MarketEngine::computeEquilibriumPrice(const ProductsAggregate& demand, const ProductsAggregate& supply) {
+
+    ProductsList productsList = productsPricer.getProductsList();
+
+    for (const Product& product : productsList) {
+        Quantity totalDemand = aggregateDemand[product.productID];
+        Quantity totalSupply = aggregateSupply[product.productID];
+        productsPricer.computeEquilibriumPrice(product.productID, totalDemand, totalSupply);
+    }
 
 }
 
 
-void MarketEngine::clearMarketProRata() {
+void MarketEngine::clearMarketProRata(ProductsAggregate& demand, ProductsAggregate& supply) {
+
+
+    // clear between agent pro rata
+
 
 }
 
 
 void MarketEngine::updateAgentsState() {
-
+    for (EconomicAgent& agent : agents) {
+        agent.tick();
+    }
 }

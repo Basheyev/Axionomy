@@ -22,7 +22,7 @@ add_executable (
         
     "src/engine/entities/Firm.cpp"
     "src/engine/entities/Household.cpp" 
-    "src/engine/entities/NationalBank.cpp" 
+     
         
     "src/engine/MarketEngine.h" 
     "src/engine/MarketEngine.cpp" 
