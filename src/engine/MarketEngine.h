@@ -33,6 +33,9 @@ namespace Axionomy {
         ProductID productID;
         Quantity quantity;
     };
+    struct Order : Item {
+        Money price;
+    };
     using BillOfMaterials = std::vector<Item>;
     enum class ProductType : uint16_t { Good, Service };
     enum class ProductUnit : uint16_t { Piece, Kg, Liter, Hour };
@@ -109,19 +112,14 @@ namespace Axionomy {
         virtual ~EconomicAgent() = default;
         virtual void tick() = 0;
     protected:
-        
         AgentID  agentID;             // Agent ID
-
         std::vector<Item> inventory;  // Inventory (stock)
-
-        std::vector<Item> demandedInputs; 
-        std::vector<Item> suppliedOutputs;
-        
-        Money cash;
-        Money debt;
+        std::vector<Order> bids;      // Buy orders
+        std::vector<Order> asks;      // Sell orders
+        Money cash{ 0 };
+        Money debt{ 0 };
 
         friend class MarketEngine;
-
     };
 
 

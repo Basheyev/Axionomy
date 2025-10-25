@@ -30,9 +30,9 @@ void MarketEngine::aggregateSupplyDemand(ProductsAggregate& demand, ProductsAggr
 
     // Compute demand/supply aggregates
     for (const EconomicAgent& agent : agents) {
-        for (const Item& inputItem : agent.demandedInputs)
+        for (const Item& inputItem : agent.bids)
             demand[inputItem.productID] += inputItem.quantity;
-        for (const Item& outputItem : agent.suppliedOutputs)
+        for (const Item& outputItem : agent.asks)
             supply[outputItem.productID] += outputItem.quantity;
     }
 
