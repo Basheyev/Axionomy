@@ -25,15 +25,20 @@ void MarketEngine::processTick() {
 void MarketEngine::aggregateSupplyDemand() {
 
     // Clear aggregates
+    orders.clear();
     for (auto& [key, value] : aggregateDemand) value = 0;
     for (auto& [key, value] : aggregateSupply) value = 0;
 
     // Compute demand/supply aggregates
     for (const EconomicAgent& agent : agents) {
-        for (const Item& inputItem : agent.bids)
-            aggregateDemand[inputItem.productID] += inputItem.quantity;
-        for (const Item& outputItem : agent.asks)
-            aggregateSupply[outputItem.productID] += outputItem.quantity;
+        for (const Order& bid : agent.bids) {
+            aggregateDemand[bid.productID] += bid.quantity;
+            orders.push_back(bid);
+        }
+        for (const Order& ask : agent.asks) {
+            aggregateSupply[ask.productID] += ask.quantity;
+            orders.push_back(ask);
+        }
     }
 
 }

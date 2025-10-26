@@ -27,8 +27,8 @@ namespace Axionomy {
 
     using Money = double;
     using Quantity = double;
-    using ProductID = uint32_t;
-    using AgentID = uint32_t;
+    using ProductID = size_t;
+    using AgentID = size_t;
     
     struct Item {
         ProductID productID;
@@ -42,17 +42,17 @@ namespace Axionomy {
     // Order data structure
     //-------------------------------------------------------------------------
     struct Order : Item {
-        Money price;
-        OrderSide side;
+        Money price;           // Order price
+        OrderSide side;        // Order side
     };
 
     //-------------------------------------------------------------------------
     // Contract data structure
     //-------------------------------------------------------------------------
-    struct Contract : Order {
-        // do I need side?
-        AgentID buyer;
-        AgentID seller;
+    struct Contract : Item {
+        Money price;           // Actual deal price
+        AgentID buyer;         // buyer agent ID
+        AgentID seller;        // seller agent ID
     };
     
     enum class ProductType : uint16_t { Good, Service };
