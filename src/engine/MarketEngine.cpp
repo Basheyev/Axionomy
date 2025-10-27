@@ -17,7 +17,7 @@ void MarketEngine::processTick() {
     updateAgentsState();
     aggregateSupplyDemand();
     computeEquilibriumPrice();
-    marketClearing();    
+    processMarketClearing();    
     tickCounter++;
 }
 
@@ -77,17 +77,38 @@ void MarketEngine::computeEquilibriumPrice() {
 //----------------------------------------------------------------------------------------------------
 // 
 //----------------------------------------------------------------------------------------------------
-void MarketEngine::marketClearing() {
+void MarketEngine::processMarketClearing() {
 
+    const ProductsList& productsList = productsPricer.getProductsList();
+
+    // Iterate over all market products
+    for (const Product& product : productsList) {
+        // If product demand and supply is greater than zero then do the clearing
+        ProductID productID = product.productID;
+        if (aggregateDemand[productID] > 0 && aggregateSupply[productID] > 0) {
+            processProductClearing(productID);
+        }
+    }
+
+    // fulfill contracts
+    fulfillContracts();
+
+}
+
+
+
+//----------------------------------------------------------------------------------------------------
+// 
+//----------------------------------------------------------------------------------------------------
+void MarketEngine::processProductClearing(const ProductID productID) {
     // TODO: Make clearing by prices and volumes, and pro rata in same price segment  
-    // TODO: make contracts and fulfillment
+
+    //buildPriceGrid(productID, )
 
     /* Algorithm:
     *
 
 
-2. Price grid.
-Collect all unique prices from Bid ∪ Ask. These are the candidate clearing prices. It is useful to track bestBid = max(Bid.price) and bestAsk = min(Ask.price).
 
 3. Cumulative volumes at each candidate price p.
 CumBid(p): total demand from all bids with price ≥ p.
@@ -148,10 +169,16 @@ After rounding, total_buy == total_sell (if mismatch occurs, adjust via largest-
 }
 
 
-void getProductOrderBook(std::vector<Order>& ask, std::vector<Order>& bid) {
-    ask.clear();
-    bid.clear();
+void MarketEngine::buildPriceGrid(const ProductID productID, std::unordered_map<Money, Quantity>& productPriceGrid) {
+    // 2. Price grid.
+    // Collect all unique prices from Bid ∪ Ask.These are the 
+    // candidate clearing prices.
+    // It is useful to track bestBid = max(Bid.price) and bestAsk = min(Ask.price).
 
+}
+
+void MarketEngine::fulfillContracts() {
+    // TODO: make contracts and fulfillment
 }
 
 

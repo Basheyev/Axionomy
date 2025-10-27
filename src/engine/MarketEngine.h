@@ -182,7 +182,12 @@ namespace Axionomy {
         
         void aggregateSupplyDemand();
         void computeEquilibriumPrice();
-        void marketClearing();
+        void processMarketClearing();
+
+        void processProductClearing(const ProductID productID);
+        void buildPriceGrid(const ProductID productID, std::unordered_map<Money, Quantity>& productPriceGrid);
+        void fulfillContracts();
+
         void updateAgentsState();
 
 
