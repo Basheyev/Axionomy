@@ -23,14 +23,16 @@ void MarketEngine::processTick() {
 
 
 
-
+//----------------------------------------------------------------------------------------------------
+// 
+//----------------------------------------------------------------------------------------------------
 void MarketEngine::aggregateSupplyDemand() {
 
     // Clear aggregates
-    for (auto& [prdouctID, bidOrders] : bidOrdersBook) bidOrders.clear();
-    for (auto& [prdouctID, askOrders] : askOrdersBook) askOrders.clear();
-    for (auto& [prdouctID, demandVolume] : aggregateDemand) demandVolume = 0;
-    for (auto& [prdouctID, supplyVolume] : aggregateSupply) supplyVolume = 0;
+    for (auto& [productID, bidOrders] : bidOrdersBook) bidOrders.clear();
+    for (auto& [productID, askOrders] : askOrdersBook) askOrders.clear();
+    for (auto& [productID, demandVolume] : aggregateDemand) demandVolume = 0;
+    for (auto& [productID, supplyVolume] : aggregateSupply) supplyVolume = 0;
 
     // Compute demand/supply aggregates and make Product order books
     for (const EconomicAgent& agent : agents) {
@@ -38,19 +40,17 @@ void MarketEngine::aggregateSupplyDemand() {
         // Aggregate all bid orders by products
         for (const Order& bid : agent.bids)                   // Iterate over all agents bid orders
         if (bid.quantity > 0) {                               // Discard zero or negative quantities
-            ProductID productID = bid.productID;              // Get product unqiue ID
-            aggregateDemand[productID] += bid.quantity;       // Compute demand aggregate
-            auto& productBids = bidOrdersBook[productID];     // Get product Bid Orders Book
-            productBids.push_back(bid);                       // Copy bid order to order book
+            aggregateDemand[bid.productID] += bid.quantity;   // Compute demand aggregate
+            auto& productBids = bidOrdersBook[bid.productID]; // Get product Bid Orders Book
+            productBids.push_back(bid);                       // Copy bid order to Ask Orders Book
         }
         
         // Aggregate all ask orders by products
         for (const Order& ask : agent.asks)                   // Iterate over all agents ask orders
         if (ask.quantity > 0) {                               // Discard zero or negative quantities 
-            ProductID productID = ask.productID;              // Get product unqiue ID
-            aggregateSupply[productID] += ask.quantity;       // Compute supply aggregate 
-            auto& productAsks = askOrdersBook[productID];     // Get product Ask Orders Book
-            productAsks.push_back(ask);                       // Copy bid order to order book
+            aggregateSupply[ask.productID] += ask.quantity;   // Compute supply aggregate 
+            auto& productAsks = askOrdersBook[ask.productID]; // Get product Ask Orders Book
+            productAsks.push_back(ask);                       // Copy ask order to Ask Orders Book
         }
 
     }
@@ -58,6 +58,9 @@ void MarketEngine::aggregateSupplyDemand() {
 }
 
 
+//----------------------------------------------------------------------------------------------------
+// 
+//----------------------------------------------------------------------------------------------------
 void MarketEngine::computeEquilibriumPrice() {
 
     const ProductsList& productsList = productsPricer.getProductsList();
@@ -71,6 +74,9 @@ void MarketEngine::computeEquilibriumPrice() {
 }
 
 
+//----------------------------------------------------------------------------------------------------
+// 
+//----------------------------------------------------------------------------------------------------
 void MarketEngine::marketClearing() {
 
     // TODO: Make clearing by prices and volumes, and pro rata in same price segment  
