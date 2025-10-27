@@ -173,10 +173,11 @@ namespace Axionomy {
 
         size_t tickCounter;
         ProductsPricer productsPricer;
+        std::vector<EconomicAgent> agents;
         std::unordered_map<ProductID, Quantity> aggregateDemand;
         std::unordered_map<ProductID, Quantity> aggregateSupply;
-        std::vector<EconomicAgent> agents;
-        std::vector<Order> orders;
+        std::unordered_map<ProductID, std::vector<Order>> bidOrdersBook;
+        std::unordered_map<ProductID, std::vector<Order>> askOrdersBook;
         std::vector<Contract> contracts;
         
         void aggregateSupplyDemand();
