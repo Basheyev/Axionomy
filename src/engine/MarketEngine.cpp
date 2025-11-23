@@ -15,6 +15,9 @@ MarketEngine::MarketEngine(const std::string& productsList) : productsPricer(pro
 }
 
 
+//----------------------------------------------------------------------------------------------------
+// Process economy simulation tick
+//----------------------------------------------------------------------------------------------------
 void MarketEngine::processTick() {    
     updateAgentsState();
     aggregateSupplyDemand();
@@ -23,6 +26,18 @@ void MarketEngine::processTick() {
     tickCounter++;
 }
 
+
+
+//----------------------------------------------------------------------------------------------------
+// Process agents next step
+//----------------------------------------------------------------------------------------------------
+void MarketEngine::updateAgentsState() {
+    for (EconomicAgent& agent : agents) {
+        MarketContext mc;
+        // provide market context
+        agent.tick(mc);
+    }
+}
 
 
 //----------------------------------------------------------------------------------------------------
@@ -104,14 +119,3 @@ void MarketEngine::processProductClearing(const ProductID productID) {
    
 }
 
-
-//----------------------------------------------------------------------------------------------------
-// Process agents next step
-//----------------------------------------------------------------------------------------------------
-void MarketEngine::updateAgentsState() {
-    for (EconomicAgent& agent : agents) {
-        MarketContext mc;
-        // provide market context
-        agent.tick(mc);
-    }
-}
