@@ -1,6 +1,8 @@
 ﻿
 #include "MarketEngine.h"
 
+#include <unordered_set>
+
 
 using namespace Axionomy;
 
@@ -103,16 +105,16 @@ void MarketEngine::processMarketClearing() {
 void MarketEngine::processProductClearing(const ProductID productID) {
     // TODO: Make clearing by prices and volumes, and pro rata in same price segment  
 
-    //buildPriceGrid(productID, )
+    // Build price grid
+    std::unordered_map<Money, Quantity> priceGrid;
+    buildPriceGrid(productID, priceGrid);
 
     /* Algorithm:
     *
 
 
 
-3. Cumulative volumes at each candidate price p.
-CumBid(p): total demand from all bids with price ≥ p.
-CumAsk(p): total supply from all asks with price ≤ p.
+
 
 4. Executable volume at price p.
 Vol(p) = min(CumBid(p), CumAsk(p)).
@@ -169,11 +171,24 @@ After rounding, total_buy == total_sell (if mismatch occurs, adjust via largest-
 }
 
 
-void MarketEngine::buildPriceGrid(const ProductID productID, std::unordered_map<Money, Quantity>& productPriceGrid) {
+void MarketEngine::buildPriceGrid(const ProductID productID, std::unordered_map<Money, Quantity>& priceGrid) {
+    
     // 2. Price grid.
-    // Collect all unique prices from Bid ∪ Ask.These are the 
-    // candidate clearing prices.
-    // It is useful to track bestBid = max(Bid.price) and bestAsk = min(Ask.price).
+    //    Collect all unique prices from Bid ∪ Ask.These are the 
+    //    candidate clearing prices.
+    //    It is useful to track bestBid = max(Bid.price) and bestAsk = min(Ask.price).
+
+    // 3. Cumulative volumes at each candidate price p.
+    //    CumBid(p) : total demand from all bids with price ≥ p.
+    //    CumAsk(p) : total supply from all asks with price ≤ p.
+
+    priceGrid.clear();
+    std::vector<Order>& bids = bidOrdersBook[productID];
+    std::vector<Order>& asks = askOrdersBook[productID];
+    priceGrid.reserve(bids.size() + asks.size());    
+
+    //for (const Order& bid : bids) priceGrid.insert(bid.price);    
+    //for (const Order& ask : asks) priceGrid.insert(ask.price);
 
 }
 

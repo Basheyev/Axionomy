@@ -185,7 +185,7 @@ namespace Axionomy {
         void processMarketClearing();
 
         void processProductClearing(const ProductID productID);
-        void buildPriceGrid(const ProductID productID, std::unordered_map<Money, Quantity>& productPriceGrid);
+        void buildPriceGrid(const ProductID productID, std::unordered_map<Money, Quantity>& priceGrid);
         void fulfillContracts();
 
         void updateAgentsState();
