@@ -44,15 +44,7 @@ namespace Axionomy {
     struct Order : Item {
         Money price;           // Order price
         OrderSide side;        // Order side
-    };
-
-    //-------------------------------------------------------------------------
-    // Contract data structure
-    //-------------------------------------------------------------------------
-    struct Contract : Item {
-        Money price;           // Actual deal price
-        AgentID buyer;         // buyer agent ID
-        AgentID seller;        // seller agent ID
+        AgentID agent;         // Order agent
     };
     
     enum class ProductType : uint16_t { Good, Service };
@@ -121,19 +113,10 @@ namespace Axionomy {
     };
 
     //-------------------------------------------------------------------------
-    // Market Context - information Asymmetry & Bounded Rationality mechanism
+    // Market Context - Information Asymmetry & Bounded Rationality mechanism
     //-------------------------------------------------------------------------
     struct MarketContext {
-        
         // Market Visibility
-
-    };
-
-
-    struct SellerPerception {
-        AgentID id;
-        float   awareness;
-        float   nps;
     };
 
     //-------------------------------------------------------------------------
@@ -149,8 +132,6 @@ namespace Axionomy {
         std::vector<Item> inventory;  // Inventory (stock)
         std::vector<Order> bids;      // Buy orders
         std::vector<Order> asks;      // Sell orders
-
-        std::vector<SellerPerception> sellersPerception;
 
         Money cash{ 0 };
         Money debt{ 0 };
@@ -176,18 +157,12 @@ namespace Axionomy {
         std::vector<EconomicAgent> agents;
         std::unordered_map<ProductID, Quantity> aggregateDemand;
         std::unordered_map<ProductID, Quantity> aggregateSupply;
-        std::unordered_map<ProductID, std::vector<Order>> bidOrdersBook;
-        std::unordered_map<ProductID, std::vector<Order>> askOrdersBook;
-        std::vector<Contract> contracts;
-        
+        std::unordered_map<ProductID, std::vector<Order>> ordersBook;
+                
         void aggregateSupplyDemand();
         void computeEquilibriumPrice();
         void processMarketClearing();
-
         void processProductClearing(const ProductID productID);
-        void buildPriceGrid(const ProductID productID, std::unordered_map<Money, Quantity>& priceGrid);
-        void fulfillContracts();
-
         void updateAgentsState();
 
 
