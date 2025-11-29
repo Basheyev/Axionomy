@@ -40,9 +40,15 @@ void productLoaderTest() {
 }
 
 
+void marketTester() {
+	MarketEngine me("data\\products.json");
+	me.processTick();
+}
+
+
 int main()
 {	
-	//ProductsPricer marketPricer("data\\products.json");
-	productLoaderTest();
+	//	productLoaderTest();
+	marketTester();
 	return 0;
 }

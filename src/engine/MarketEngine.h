@@ -112,21 +112,16 @@ namespace Axionomy {
         void evaluateProductCost(Product& product);
     };
 
-    //-------------------------------------------------------------------------
-    // Market Context - Information Asymmetry & Bounded Rationality mechanism
-    //-------------------------------------------------------------------------
-    struct MarketContext {
-        // Market Visibility
-    };
 
     //-------------------------------------------------------------------------
     // Base interface of simulation entity
     //-------------------------------------------------------------------------
     enum class EconomicAgentType : uint16_t { Household, Firm };
+   
     class EconomicAgent {
     public:
         virtual ~EconomicAgent() = default;
-        virtual void tick(MarketContext&) = 0;
+        virtual void tick() = 0;
     protected:
         AgentID  agentID;             // Agent ID
         std::vector<Item> inventory;  // Inventory (stock)
@@ -139,6 +134,23 @@ namespace Axionomy {
         friend class MarketEngine;
     };
 
+    //-------------------------------------------------------------------------
+    // Household
+    //-------------------------------------------------------------------------
+    class Household : public EconomicAgent {
+    public:
+        void tick() override;
+    };
+
+    //-------------------------------------------------------------------------
+    // Firm
+    //-------------------------------------------------------------------------
+    class Firm : public EconomicAgent {
+    public:
+        void tick() override;
+    };
+
+
 
     //-------------------------------------------------------------------------
     // Market simulation engine core
@@ -147,7 +159,6 @@ namespace Axionomy {
     public:
 
         MarketEngine(const std::string& productsList);
-
         void processTick();
 
     private:
@@ -169,21 +180,6 @@ namespace Axionomy {
     };
 
 
-    //-------------------------------------------------------------------------
-    // Household
-    //-------------------------------------------------------------------------
-    class Household : public EconomicAgent {
-    public:
-        void tick(MarketContext&) override;
-    };
-
-    //-------------------------------------------------------------------------
-    // Firm
-    //-------------------------------------------------------------------------
-    class Firm : public EconomicAgent {
-    public:
-        void tick(MarketContext&) override;
-    };
 
 
 }

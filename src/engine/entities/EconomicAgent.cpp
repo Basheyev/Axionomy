@@ -4,8 +4,4 @@
 
 using namespace Axionomy;
 
-void Firm::tick() {
 
-
-
-}

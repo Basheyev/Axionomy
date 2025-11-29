@@ -27,7 +27,7 @@ add_executable (
     "src/engine/MarketEngine.h" 
     "src/engine/MarketEngine.cpp" 
 
-)
+ "src/engine/entities/EconomicAgent.cpp")
 
 # Добавляем include-путь на корень src
 target_include_directories(Axionomy PRIVATE

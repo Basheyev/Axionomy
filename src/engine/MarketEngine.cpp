@@ -33,12 +33,10 @@ void MarketEngine::processTick() {
 //----------------------------------------------------------------------------------------------------
 void MarketEngine::updateAgentsState() {
     for (EconomicAgent& agent : agents) {
-        MarketContext mc;
         // provide market context
-        agent.tick(mc);
+        agent.tick();
     }
 }
-
 
 //----------------------------------------------------------------------------------------------------
 // Copy all orders from agents to market orders book and calculate aggregates
@@ -115,7 +113,15 @@ void MarketEngine::processMarketClearing() {
 //----------------------------------------------------------------------------------------------------
 void MarketEngine::processProductClearing(const ProductID productID) {
     
+    auto orders = ordersBook[productID];
+    auto demand = aggregateDemand[productID];
+    auto supply = aggregateSupply[productID];
+
+    // build price grid (with matching bid/ask)
+    // fulfill best prices
+    // same prices fulfill pro rata
     //
+
    
 }
 
