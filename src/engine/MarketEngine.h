@@ -118,15 +118,18 @@ namespace Axionomy {
     //-------------------------------------------------------------------------
     enum class EconomicAgentType : uint16_t { Household, Firm };
    
-    class EconomicAgent {
+    class EconomicAgent {    
     public:
         virtual ~EconomicAgent() = default;
         virtual void tick() = 0;
     protected:
-        AgentID  agentID;             // Agent ID
-        std::vector<Item> inventory;  // Inventory (stock)
-        std::vector<Order> bids;      // Buy orders
-        std::vector<Order> asks;      // Sell orders
+        AgentID  agentID;              // Agent ID
+        std::vector<Item> inventory;   // Inventory (stock)
+
+        // FIXME: I think that there is no reason store store orders here
+        // maybe its better to directly submit orders to the market engine
+        std::vector<Order> buyOrders;  // Buy orders
+        std::vector<Order> sellOrders; // Sell orders
 
         Money cash{ 0 };
         Money debt{ 0 };
@@ -159,7 +162,12 @@ namespace Axionomy {
     public:
 
         MarketEngine(const std::string& productsList);
+
         void processTick();
+            
+        void submitOrder(AgentID agent, Quantity qty, Money limitPrice, OrderSide side);
+        void executeTrade(AgentID buyer, AgentID seller, Quantity qty, Money tradePrice);
+            
 
     private:
 
@@ -168,6 +176,8 @@ namespace Axionomy {
         std::vector<EconomicAgent> agents;
         std::unordered_map<ProductID, Quantity> aggregateDemand;
         std::unordered_map<ProductID, Quantity> aggregateSupply;
+
+        // TODO: I thinks its better to separate buy / sell orders and calculate aggregates in submitOrder method
         std::unordered_map<ProductID, std::vector<Order>> ordersBook;
                 
         void aggregateSupplyDemand();

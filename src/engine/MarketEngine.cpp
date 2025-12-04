@@ -52,7 +52,7 @@ void MarketEngine::aggregateSupplyDemand() {
     for (const EconomicAgent& agent : agents) {
         
         // Aggregate all bid orders by products
-        for (const Order& bid : agent.bids)                     // Iterate over all agents bid orders
+        for (const Order& bid : agent.buyOrders)                     // Iterate over all agents bid orders
         if (bid.quantity > 0) {                                 // Discard zero or negative quantities
             aggregateDemand[bid.productID] += bid.quantity;     // Compute demand aggregate
             auto& productOrderBook = ordersBook[bid.productID]; // Get product Orders Book
@@ -60,7 +60,7 @@ void MarketEngine::aggregateSupplyDemand() {
         }
         
         // Aggregate all ask orders by products
-        for (const Order& ask : agent.asks)                     // Iterate over all agents ask orders
+        for (const Order& ask : agent.sellOrders)                     // Iterate over all agents ask orders
         if (ask.quantity > 0) {                                 // Discard zero or negative quantities 
             aggregateSupply[ask.productID] += ask.quantity;     // Compute supply aggregate 
             auto& productOrderBook = ordersBook[ask.productID]; // Get product Ask Orders Book
@@ -117,11 +117,12 @@ void MarketEngine::processProductClearing(const ProductID productID) {
     auto demand = aggregateDemand[productID];
     auto supply = aggregateSupply[productID];
 
-    // build price grid (with matching bid/ask)
-    // fulfill best prices
-    // same prices fulfill pro rata
-    //
+    // 1. Sort sell orders in ascending order (best price is lowest)
+    // 2. Sort buy orders in descending order (best price is highest)
+    // 3. Iterate through buy orders and fulfill sell orders:
+    //    - if sell price < buy price - fullfill orders
+    //    - if sell price are same - fullfill buy orders pro rata
+    //    - execute trade (buyer, seller, quantity, trade price)
 
-   
 }
 
